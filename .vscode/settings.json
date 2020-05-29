@@ -1,0 +1,19 @@
+{
+    "vetur.format.defaultFormatter.html": "none",
+    "vetur.validation.template": false,
+    "eslint.enable": true,
+    "eslint.run": "onType",
+    "eslint.validate": [
+      "vue",
+      "html",
+      "javascript",
+      "javascriptreact"
+    ],
+    "eslint.alwaysShowStatus": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true
+    },
+    "editor.formatOnSave": false,
+    "importCost.typescriptExtensions": ["\\.tsx?$", "\\.vue$"],
+    "importCost.timeout": 20000
+  }
