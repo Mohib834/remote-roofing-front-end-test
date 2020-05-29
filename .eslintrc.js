@@ -14,15 +14,17 @@ module.exports = {
     },
     extends: [
       "plugin:react/recommended", // Uses the recommended rules from @eslint-plugin-react
-      "plugin:@typescript-eslint/recommended" // Uses the recommended rules from @typescript-eslint/eslint-plugin
+      "plugin:@typescript-eslint/recommended", // Uses the recommended rules from @typescript-eslint/eslint-plugin
     ],
     rules:{
-      "no-console": "warn",
-      "no-eval": "error",
-      "indent": [2, "tab"],
+      "react/jsx-indent":[2, 4],
+      "react/jsx-indent-props": [2, 2],
       "react/jsx-max-props-per-line": [1, { "maximum": 1 }],
+      "react/jsx-closing-bracket-location": [1, {"location": "line-aligned"}],
       "array-bracket-spacing": [2, "always"],
       "computed-property-spacing": [2, "always"],
       "object-curly-spacing": [2, "always"],
+      "semi": [2, "always"],
+      "react/prop-types":0,
     }
 };
