@@ -1,16 +1,14 @@
 import React from 'react';
 import { Container, Grid } from '@material-ui/core';
 import TopBar from '../components/partials/TopBar';
-import MovieCard from '../components/partials/MovieCard';
+import ShowsCard from '../components/partials/ShowsCard';
 import { RouteComponentProps } from 'react-router-dom';
 
-// type Props = {} // Props to define ( if there are any )
+type OwnProps = {} // Props to define ( if there are any )
 
-// type ComposedProps = Props & RouteComponentProps<{}>; // Props with router props
-
-type Props = {
-  routeProps: RouteComponentProps;
-}
+type Props = OwnProps & {
+  routeProps: RouteComponentProps<{}>;
+}; // Props with router props
 
 const Home: React.FC<Props> = (props) => {
 	return (
@@ -22,9 +20,9 @@ const Home: React.FC<Props> = (props) => {
             >
                 <Grid item
                   xs={2}
-                  style={{ marginRight: 20 }}
+                  style={{ marginRight: 40 }}
                 >
-                    <MovieCard    
+                    <ShowsCard    
                       cardTitle="Popular Movies"
                       isGenre
                       genreTitle="Movies"
@@ -35,7 +33,7 @@ const Home: React.FC<Props> = (props) => {
                 <Grid item
                   xs={2}
                 >
-                    <MovieCard 
+                    <ShowsCard 
                       cardTitle="Popular Series"
                       isGenre
                       genreTitle="Series"

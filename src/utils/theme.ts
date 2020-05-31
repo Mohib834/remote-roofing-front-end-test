@@ -1,6 +1,9 @@
 import { createMuiTheme } from '@material-ui/core/styles';
 
 const theme = createMuiTheme({
+	shape: {
+		borderRadius:0,
+	},
 	typography: {
 		fontSize: 16,
 		fontFamily: `'Work Sans', sans-serif`,
@@ -22,15 +25,9 @@ const theme = createMuiTheme({
 	overrides: {
 		MuiButton: {
 			root: {
-				borderRadius: 0,
 				textTransform: 'initial'
 			}
 		},
-		MuiCard: {
-			root: {
-				borderRadius: 0,
-			}
-		}
 	}
 });
 

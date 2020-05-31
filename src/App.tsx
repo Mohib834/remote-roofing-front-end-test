@@ -32,11 +32,11 @@ const App: React.FC = () => {
             <Switch>
                 <Route
                   path="/series"
-                  render={ () => <Series /> }
+                  render={ (routeProps): any => <Series routeProps={routeProps} /> }
                 />
                 <Route
                   path="/movies"
-                  render={ () => <Movies /> }
+                  render={ (routeProps): any => <Movies routeProps={routeProps} /> }
                 />
                 <Route 
                   path="/"

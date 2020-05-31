@@ -1,12 +1,11 @@
 // We do this so that we don't do typos in writing types of a dispatch
-const FETCH_MOVIES_DATA = "FETCH_MOVIES_DATA";
+const FETCH_SHOWS_DATA = "FETCH_SHOWS_DATA";
 const CHANGE_LOADING_STATUS = "CHANGE_LOADING_STATUS"; 
 
-// Fetch Movies ( outsourcing actions ) 
+// Fetch Shows ( outsourcing actions ) 
 // each action in type format
-export type FetchMoviesData = {
-    type: typeof FETCH_MOVIES_DATA;
-    moviesData: null | Array<{}>; // Data coming from action to reducer // Payload
+export type FetchShowsData = {
+    type: typeof FETCH_SHOWS_DATA;
 }
 
 export type ChangeLoadingStatus = {
@@ -14,8 +13,8 @@ export type ChangeLoadingStatus = {
     isLoading: boolean;
 }
 
-// All Fetch Movies Actions into one FetchMoviesDataTypes
-export type MoviesActionsTypes = FetchMoviesData | ChangeLoadingStatus
+// All Fetch Shows Actions into one FetchShowsDataTypes
+export type ShowsActionsTypes = FetchShowsData | ChangeLoadingStatus
 
 // Combining all the action from into one AppActions
-export type AppActions = MoviesActionsTypes
+export type AppActions = ShowsActionsTypes

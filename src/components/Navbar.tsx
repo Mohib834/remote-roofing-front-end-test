@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { AppBar, Toolbar, Button, Typography, Container, makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
@@ -22,7 +23,11 @@ const Navbar: React.FC = (props) => {
                   variant="h5"
                   className={classes.title}
                 >
-                    DEMO Streaming
+                    <Link to="/"
+                      style={{ textDecoration: 'none', color: '#fff' }}
+                    >
+                        DEMO Streaming
+                    </Link>
                 </Typography>
                 <Button
                   size="small"

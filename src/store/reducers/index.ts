@@ -1,9 +1,9 @@
 import { combineReducers } from 'redux';
-import moviesReducers from './moviesReducer';
+import showsReducers from './showsReducer';
 
 // All store reducer modules pass through one reducer
 const rootReducer = combineReducers({
-    movies: moviesReducers,
+    shows: showsReducers,
 });
 
 export type AppState = ReturnType<typeof rootReducer> 

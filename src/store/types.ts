@@ -1,4 +1,5 @@
-export type MoviesStateTypes = {
-    moviesData: Array<{}> | null;
+export type ShowsStateTypes = {
     isLoading: boolean;
 }
+
+// Movies Api types
