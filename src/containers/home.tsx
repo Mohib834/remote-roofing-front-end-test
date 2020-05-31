@@ -4,11 +4,15 @@ import TopBar from '../components/partials/TopBar';
 import MovieCard from '../components/partials/MovieCard';
 import { RouteComponentProps } from 'react-router-dom';
 
-type Props = {} // Props to define ( if there are any )
+// type Props = {} // Props to define ( if there are any )
 
-type ComposedProps = Props & RouteComponentProps<{}>; // Props with router props
+// type ComposedProps = Props & RouteComponentProps<{}>; // Props with router props
 
-const Home: React.FC<ComposedProps> = (props) => {
+type Props = {
+  routeProps: RouteComponentProps;
+}
+
+const Home: React.FC<Props> = (props) => {
 	return (
     <section>
         <TopBar text="Popular titles" />
@@ -25,6 +29,7 @@ const Home: React.FC<ComposedProps> = (props) => {
                       isGenre
                       genreTitle="Movies"
                       link="/movies"
+                      routeProps={props.routeProps}
                     />
                 </Grid>
                 <Grid item
@@ -35,6 +40,7 @@ const Home: React.FC<ComposedProps> = (props) => {
                       isGenre
                       genreTitle="Series"
                       link="/series"
+                      routeProps={props.routeProps}
                     />
                 </Grid>
             </Grid>

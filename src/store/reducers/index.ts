@@ -1,9 +1,11 @@
-const initialState = {
-    counter: 0
-};
+import { combineReducers } from 'redux';
+import moviesReducers from './moviesReducer';
 
-const reducer = (state = initialState, action: any) => {
-    return state;
-};
+// All store reducer modules pass through one reducer
+const rootReducer = combineReducers({
+    movies: moviesReducers,
+});
 
-export default reducer;
+export type AppState = ReturnType<typeof rootReducer> 
+
+export default rootReducer;

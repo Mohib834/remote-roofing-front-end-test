@@ -1,11 +1,13 @@
 import React from 'react';
 import {  Card, CardContent, Typography, makeStyles, Box, ButtonBase } from '@material-ui/core';
+import { RouteComponentProps } from 'react-router-dom';
 
-type PropTypes = {
+type Props = {
     cardTitle: string;
     link: string; 
     genreTitle?: string;
     isGenre?: boolean; // Whether it is a genre card or movie/series card
+    routeProps: RouteComponentProps;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -42,12 +44,17 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const MovieCard: React.FC<PropTypes> = (props) => {
+const MovieCard: React.FC<Props> = (props) => {
     const { movieCard, movieCardContent, movieGenre, filmImg } = useStyles();
+
+    const redirect = (): void => {
+        const { routeProps, link } = props;
+        routeProps.history.push(link);
+    };
 
     return (
         <Box>
-            <ButtonBase >
+            <ButtonBase onClick={redirect}>
                 <Card
                   color="secondary"
                   className={movieCard}

@@ -1,12 +1,13 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Switch, Route } from 'react-router';
 import { makeStyles } from '@material-ui/core';
 // Components
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-// Pages
-import Home from './views/home';
-import Series from './views/series';
+// Containers or Pages
+import Home from './containers/home';
+import Series from './containers/series';
+import Movies from './containers/movies';
 
 const useStyles = makeStyles((theme) => ({
 	app: {
@@ -33,9 +34,13 @@ const App: React.FC = () => {
                   path="/series"
                   render={ () => <Series /> }
                 />
+                <Route
+                  path="/movies"
+                  render={ () => <Movies /> }
+                />
                 <Route 
                   path="/"
-                  render={ (routeProps): any => <Home { ...routeProps } /> }
+                  render={ (routeProps): any => <Home routeProps={routeProps} /> }
                 />
             </Switch>
         </main>
