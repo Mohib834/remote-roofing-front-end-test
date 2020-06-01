@@ -12,3 +12,26 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* Global Styles */
+
+.input-field fieldset{
+  border-color: rgba(255,255,255,.7) !important;
+}
+
+.input-field input{
+  color: #fff;
+}
+
+.input-field input::placeholder{
+  color: rgba(255,255,255,.7);
+}
+
+.input-field .Mui-focused fieldset{
+  border: 1px solid rgba(255,255,255,1) !important;
+}
+
+.input-field .MuiFormHelperText-root{
+  margin-left:0;
+  color:#fff !important;
+}
