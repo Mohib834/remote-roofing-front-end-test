@@ -7,6 +7,7 @@ import Footer from './components/Footer';
 // Containers or Pages
 import Home from './containers/home';
 import Shows from './containers/shows';
+import Show from './containers/show';
 
 const useStyles = makeStyles((theme) => ({
 	app: {
@@ -33,9 +34,12 @@ const App: React.FC = () => {
                   path="/shows"
                   render={() => <Shows />}
                 />
+                <Route path="/show"
+                  render={() => <Show />}
+                />
                 <Route 
                   path="/"
-                  render={(routeProps): any => <Home routeProps={routeProps} />}
+                  render={() => <Home />}
                 />
             </Switch>
         </main>

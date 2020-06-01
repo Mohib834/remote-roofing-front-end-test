@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { AppState } from '../store/reducers';
 import { ThunkDispatch } from 'redux-thunk';
-import * as actionCreator from '../store/actions/movies';
+import * as actionCreator from '../store/actions/shows';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { v4 as uuid } from 'uuid';
 import { AppActions } from '../store/actions/types';
@@ -67,15 +67,14 @@ const Shows: React.FC<Props> = (props) => {
         </React.Fragment>
     );
 
-
     return (
         <section>
             {/* query param */}
             <TopBar text={category} />
-            <Container>
+            <Container style={{ marginBottom: 120 }}>
                 <SearchBar 
                   searchShows={searchShowsHandler}
-                  placeholder="Search Movies"
+                  placeholder={`Search ${category}`}
                 />
                 <Grid 
                   container
@@ -89,9 +88,8 @@ const Shows: React.FC<Props> = (props) => {
                         >
                             <ShowsCard    
                               cardTitle={s.title}
-                              link="/movies" // Make it dynamic for Show container
+                              link={`/show?sname=${s.title.toLowerCase()}&category=${category.toLowerCase()}`}
                               imgUrl={s.images["Poster Art"].url}
-                              
                             />
                         </Grid>
                 ))}

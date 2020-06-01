@@ -10,10 +10,12 @@ const Loader: React.FC = () => {
 
     return (
         <Container>
-            <Grid container>
+            <Grid container
+              spacing={4}
+            >
                 <Grid item
                   xs={12}
-                  style={{ marginBottom: 10, marginTop: -15 }}
+                  style={{ marginBottom: 0, marginTop: -15 }}
                 >
                     <Typography variant="h2">
                         <Skeleton 
@@ -25,7 +27,7 @@ const Loader: React.FC = () => {
                     <Grid item
                       xs={2}
                       key={uuid()}
-                      style={{ marginRight: 40, marginBottom: 40 }}
+                      style={{ marginRight: 40, marginBottom: 40, marginTop:-30, }}
                     > 
                         <Skeleton
                           style={{ background: 'rgba(0,0,0,.1)' }}

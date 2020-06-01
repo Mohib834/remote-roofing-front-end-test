@@ -1,5 +1,6 @@
 
 import mviApi from '../../api/rRApi';
+import tmdbApi from '../../api/tmdbApi';
 import { ChangeLoadingStatus, AppActions } from './types';
 import { Dispatch } from 'redux';
 import { AppState } from '../reducers';
@@ -17,6 +18,10 @@ const changeLoadingStatus = (payload: boolean): ChangeLoadingStatus  => {
 
 const fetchShowsData = (): AppActions => ({
     type: "FETCH_SHOWS_DATA",
+});
+
+const fetchAShow = (): AppActions => ({
+    type: "FETCH_A_SHOW"
 });
 
 
@@ -55,5 +60,31 @@ export const startFetchShowsData = (category: string) => {
     };
 };
 
-// # Not storing the movies data in the store because it is not required in any pages/container except movies and series
-// # Instead using promises to send the data to movies/series pages and storing it in local state.
+export const startFetchAShow = (sName: string, category: 'tv' | 'movie') => {
+    return (dispatch: Dispatch<AppActions>, getState: () => AppState): Promise<{[key: string]: any}> => {
+        return new Promise((resolve,reject) => {
+            dispatch(changeLoadingStatus(true));
+            // # Using Remote Roofing shows title in another api to fetch more detail about a show
+            tmdbApi.get(`/search/${category}`, {
+                params: {
+                    query: sName,
+                    page: 1,
+                }
+            }).then(res => {
+                dispatch(fetchAShow());
+                dispatch(changeLoadingStatus(false));
+                resolve(res.data.results[0]);
+            }).catch(err => {
+                reject(err);
+                dispatch(changeLoadingStatus(false));
+                console.log(err);
+            });
+        });
+    };
+};
+
+
+
+// # Not storing the shows data in the store because it is not required in any pages/container except shows container
+// # Instead using promises to send the data to shows pages and storing it in local state.
+// # Doing the same thing for "fetchAShow"

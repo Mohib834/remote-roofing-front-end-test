@@ -16,7 +16,9 @@ const Navbar: React.FC = (props) => {
 	const classes = useStyles();
 
 	return (
-    <AppBar position="static">
+    <AppBar position="static"
+      elevation={0}
+    >
         <Container>
             <Toolbar style={{ padding: 0 }}>
                 <Typography

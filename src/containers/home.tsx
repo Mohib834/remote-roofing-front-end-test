@@ -2,13 +2,10 @@ import React from 'react';
 import { Container, Grid } from '@material-ui/core';
 import TopBar from '../components/partials/TopBar';
 import ShowsCard from '../components/partials/ShowsCard';
-import { RouteComponentProps } from 'react-router-dom';
 
 type OwnProps = {} // Props to define ( if there are any )
 
-type Props = OwnProps & {
-  routeProps: RouteComponentProps<{}>;
-}; // Props with router props
+type Props = OwnProps;
 
 const Home: React.FC<Props> = (props) => {
 	return (
@@ -27,7 +24,6 @@ const Home: React.FC<Props> = (props) => {
                       isGenre
                       genreTitle="Movies"
                       link="/shows?category=movies"
-                      routeProps={props.routeProps}
                     />
                 </Grid>
                 <Grid item
@@ -38,7 +34,6 @@ const Home: React.FC<Props> = (props) => {
                       isGenre
                       genreTitle="Series"
                       link="/shows?category=series"
-                      routeProps={props.routeProps}
                     />
                 </Grid>
             </Grid>

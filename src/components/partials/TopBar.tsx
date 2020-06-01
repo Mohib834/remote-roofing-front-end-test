@@ -8,6 +8,7 @@ type TopBarProps = {
 const useStyles = makeStyles({
     title: {
         fontWeight: 400,
+        textTransform: 'capitalize',
     },
     topBar: {
         marginBottom: 30,

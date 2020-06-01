@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import {  Card, CardContent, Typography, makeStyles, Box, ButtonBase, CircularProgress } from '@material-ui/core';
-import { RouteComponentProps } from 'react-router-dom';
+import { RouteComponentProps, withRouter } from 'react-router-dom';
 
-type Props = {
+type OwnProps = {
     cardTitle: string;
     link?: string; 
     genreTitle?: string;
@@ -10,6 +10,8 @@ type Props = {
     imgUrl?: string;
     routeProps?: RouteComponentProps;
 }
+
+type Props = OwnProps & RouteComponentProps
 
 const useStyles = makeStyles((theme) => ({
     showsCard:{
@@ -32,7 +34,12 @@ const useStyles = makeStyles((theme) => ({
         padding: '30px !important', 
         display: 'flex',
         justifyContent: 'center',
-
+        '&:hover': {
+            "& $showsGenre":{
+                top:'47%',
+                opacity:1,
+            }
+        }
     },
     showsGenre: {
         position:'absolute',
@@ -40,9 +47,11 @@ const useStyles = makeStyles((theme) => ({
         fontSize: 35,
         fontWeight: 600,
         color: '#fff',
-        top: '50%',
+        top: '70%',
+        opacity: 0,
         left: '50%',
-        transform:'translate(-50%, -50%)'
+        transform:'translate(-50%, -50%)',
+        transition: 'all .3s'
     },
     showsImg: {
         position:'absolute',
@@ -60,9 +69,10 @@ const ShowsCard: React.FC<Props> = (props) => {
     const [isImgLoading, setImgLoading] = useState(true);
 
     const redirect = (): void => {
-        const { routeProps, link } = props;
-        if(routeProps && link){
-            routeProps.history.push(link);
+        const { link } = props;
+
+        if(link){
+            props.history.push(link);
         }
     };
 
@@ -115,4 +125,4 @@ ShowsCard.defaultProps = {
     isGenre: false,
 };
 
-export default ShowsCard;
+export default withRouter(ShowsCard);

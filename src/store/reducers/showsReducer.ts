@@ -10,6 +10,8 @@ export default (state: ShowsStateTypes = initState, action: ShowsActionsTypes): 
     switch (action.type){
         case "FETCH_SHOWS_DATA":
             return state;
+        case "FETCH_A_SHOW":
+            return state;
         case "CHANGE_LOADING_STATUS":
             return {
                 ...state,
