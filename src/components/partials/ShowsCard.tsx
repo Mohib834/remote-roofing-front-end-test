@@ -4,11 +4,11 @@ import { RouteComponentProps } from 'react-router-dom';
 
 type Props = {
     cardTitle: string;
-    link: string; 
+    link?: string; 
     genreTitle?: string;
     isGenre?: boolean; // Whether it is a genre card or movie/series card
     imgUrl?: string;
-    routeProps: RouteComponentProps;
+    routeProps?: RouteComponentProps;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -61,7 +61,9 @@ const ShowsCard: React.FC<Props> = (props) => {
 
     const redirect = (): void => {
         const { routeProps, link } = props;
-        routeProps.history.push(link);
+        if(routeProps && link){
+            routeProps.history.push(link);
+        }
     };
 
     const onImgLoadHandler = () => {

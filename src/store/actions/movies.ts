@@ -1,9 +1,10 @@
 
-import mviApi from '../../api/movieApi';
+import mviApi from '../../api/rRApi';
 import { ChangeLoadingStatus, AppActions } from './types';
 import { Dispatch } from 'redux';
 import { AppState } from '../reducers';
-// import { AppActions } from "./types";
+import { sortAndFilterShows } from '../../utils/helperFunctions';
+
 // Action creators
 
 // Dispatchs actions
@@ -27,13 +28,18 @@ export const startFetchShowsData = (category: string) => {
             mviApi.get('')
             .then(response => {
                 const allShows = response.data.entries as Array<{[key: string]: any; programType: string}>;
-                let shows: Array<{}>;
+                
+                let shows: Array<{[key: string]: any}>;
                 // Showing relevant show category
                 if(category === 'series'){
                     shows = allShows.filter( s => s.programType === 'series');
                 } else {
                     shows = allShows.filter( s => s.programType === 'movie');
                 }
+
+                // Sorting and filtering
+                shows = sortAndFilterShows(shows);
+
                 // Dispatching
                 dispatch(fetchShowsData());
                 dispatch(changeLoadingStatus(false));

@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
   search:{
     position: 'relative',
     borderRadius: theme.shape.borderRadius,
-    backgroundColor: fade(theme.palette.common.white, 0.15),
+    backgroundColor: fade(theme.palette.common.white, 0.2),
     '&:hover': {
       backgroundColor: fade(theme.palette.common.white, 0.25),
     },
@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
   },
   searchInput: {
     padding: '0px 4px 0px 40px',
-    width:180,
+    width:300,
     color:'inherit',
     '& input': {
       paddingTop: 5,
@@ -59,7 +59,7 @@ const SearchBar: React.FC<Props> = (props) => {
           position="static"
           style={{ marginBottom: 20 }}
         >
-            <Toolbar style={{ padding: '0 12px' }}
+            <Toolbar style={{ padding: '0 15px' }}
               variant="dense"
             >
                 <div className={search}>

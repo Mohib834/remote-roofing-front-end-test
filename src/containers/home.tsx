@@ -26,7 +26,7 @@ const Home: React.FC<Props> = (props) => {
                       cardTitle="Popular Movies"
                       isGenre
                       genreTitle="Movies"
-                      link="/movies"
+                      link="/shows?category=movies"
                       routeProps={props.routeProps}
                     />
                 </Grid>
@@ -37,7 +37,7 @@ const Home: React.FC<Props> = (props) => {
                       cardTitle="Popular Series"
                       isGenre
                       genreTitle="Series"
-                      link="/series"
+                      link="/shows?category=series"
                       routeProps={props.routeProps}
                     />
                 </Grid>

@@ -6,8 +6,7 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 // Containers or Pages
 import Home from './containers/home';
-import Series from './containers/series';
-import Movies from './containers/movies';
+import Shows from './containers/shows';
 
 const useStyles = makeStyles((theme) => ({
 	app: {
@@ -24,23 +23,19 @@ const App: React.FC = () => {
     const { app, main } = useStyles();
    
 	return (
-    <div className={ app }>
+    <div className={app}>
         {/* navigation bar */}
         <Navbar />
         {/* main content */}
         <main className={main}>
             <Switch>
                 <Route
-                  path="/series"
-                  render={ (routeProps): any => <Series routeProps={routeProps} /> }
-                />
-                <Route
-                  path="/movies"
-                  render={ (routeProps): any => <Movies routeProps={routeProps} /> }
+                  path="/shows"
+                  render={() => <Shows />}
                 />
                 <Route 
                   path="/"
-                  render={ (routeProps): any => <Home routeProps={routeProps} /> }
+                  render={(routeProps): any => <Home routeProps={routeProps} />}
                 />
             </Switch>
         </main>
