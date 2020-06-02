@@ -33,7 +33,9 @@ const Register: React.FC<Props> = (props) => {
     return (
         <section className={register}>
             <Container className={registerContainer}>
-                <AuthCard authFunction={createUserAccount} />
+                <AuthCard auth="register"
+                  authFunction={createUserAccount}
+                />
             </Container>
         </section>
     );

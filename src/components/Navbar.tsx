@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -6,9 +6,12 @@ import { AppState } from 'store/reducers';
 import firebase from 'firebase';
 
 import { AppBar, Toolbar, Button, Typography, Container, makeStyles } from '@material-ui/core';
+import { AppActions } from 'store/actions/types';
+import { Dispatch } from 'redux';
+import { storeAuthUser } from 'store/actions/userAuth';
 
 type OwnProps = {};
-type Props = OwnProps & RouteComponentProps & StoreStateProps
+type Props = OwnProps & RouteComponentProps & StoreStateProps & StoreDispatchProps
 
 const useStyles = makeStyles(theme => ({
 	title: {
@@ -23,19 +26,33 @@ const useStyles = makeStyles(theme => ({
 const Navbar: React.FC<Props> = (props) => {
   const classes = useStyles();
 
+  const [userAuth, setUserAuth] = useState(false);
+
   const logout = () => {
-    firebase.auth().signOut();
+    firebase.auth().signOut().
+    then(() => {
+      props.storeAuthUser(null);
+      props.history.push('/login');
+    });
     // Redirect to login page
-    props.history.push('/login');
   };
 
+  useEffect(() => {
+    if(props.user){
+      setUserAuth(true);
+    } else {
+      setUserAuth(false);
+    }
+  }, [props.user]);
+
   const renderNavBtn = () => {
-      // Show navbar buttons (login logout etc) according to user auth
-    if(!props.user) {
+    // Show navbar buttons (login logout etc) according to user auth
+    if(!userAuth) {
       return  (
           <React.Fragment>
               <Button
                 size="small"
+                onClick={() => props.history.push('/login')}
                 className={classes.login}
                 color="inherit"
               >Log in</Button>
@@ -83,8 +100,16 @@ type StoreStateProps = {
   user: string | null;
 }
 
+type StoreDispatchProps = {
+  storeAuthUser: (user: string | null) => void;
+}
+
 const mapStateToProps = (state: AppState): StoreStateProps => ({
   user: state.userAuth.user
 });
 
-export default withRouter(connect(mapStateToProps)(Navbar));
+const mapDispatchToProps = (dispatch: Dispatch<AppActions>): StoreDispatchProps => ({
+  storeAuthUser: (user) => dispatch(storeAuthUser(user))
+});
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Navbar));

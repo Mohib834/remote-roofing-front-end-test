@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Dispatch } from "react";
 import { Snackbar } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 import { connect } from "react-redux";
 import { AppState } from "store/reducers";
+import { AppActions } from "store/actions/types";
+import { showSnackbar } from "store/actions/userAuth";
 
 type OwnProps = {}
-type Props = OwnProps & StoreStateProps;
+type Props = OwnProps & StoreStateProps & StoreDispatchProps;
 
 const GlobalSnackBar: React.FC<Props> = (props) => {
   const [open, setOpen] = useState(false);
@@ -16,6 +18,11 @@ const GlobalSnackBar: React.FC<Props> = (props) => {
 
   const closeHandler = () => {
       setOpen(false);
+      props.showSnackbar({
+        open: false,
+        message:'',
+        color:'success',
+      });
   };
 
   return (
@@ -36,16 +43,27 @@ const GlobalSnackBar: React.FC<Props> = (props) => {
   );
 };
 
+type Snackbar = {
+  open: boolean;
+  color: "success" | "info" | "warning" | "error";
+  message: string;
+};
+
 type StoreStateProps = {
-    snackbar: {
-        open: boolean;
-        color: "success" | "info" | "warning" | "error";
-        message: string;
-    };
+    snackbar: Snackbar;
+}
+
+type StoreDispatchProps = {
+  showSnackbar: ( snackbar: Snackbar) => void;
 }
 
 const mapStateToProps = (state: AppState): StoreStateProps => ({
     snackbar: state.userAuth.snackbar
 });
 
-export default connect(mapStateToProps)(GlobalSnackBar);
+const mapDispatchToProps = (dispatch: Dispatch<AppActions>): StoreDispatchProps => ({
+  showSnackbar: (snackbar) => dispatch(showSnackbar(snackbar))
+});
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(GlobalSnackBar);

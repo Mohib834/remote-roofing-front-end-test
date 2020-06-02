@@ -29,6 +29,7 @@ export const startCreateUserAccount = (email: string, password: string) => {
         return new Promise((resolve, reject) => {
             auth.createUserWithEmailAndPassword(email, password)
             .then(res => {
+                // Storing user uid when Register
                 if(res.user?.uid){
                     dispatch(storeAuthUser(res.user?.uid));
                 }
@@ -43,7 +44,51 @@ export const startCreateUserAccount = (email: string, password: string) => {
                 resolve();
             })
             .catch(err => {
+                console.log(err);
+                dispatch(showSnackbar({
+                    open: true,
+                    message: err.message,
+                    color: 'error'
+                }));
                 dispatch(changeAuthLoadingStatus(false));
+                reject(err);
+            });
+        });
+    };
+};
+
+export const startLoginUser = (email: string, password: string) => {
+    return (dispatch: Dispatch<AppActions>, getState: () => AppState): Promise<unknown> => {
+        dispatch(changeAuthLoadingStatus(true));
+        
+        return new Promise((resolve, reject) => {
+            auth.signInWithEmailAndPassword(email, password)
+            .then(res => {
+                if(res.user?.uid){
+                    // Storing user uid when login
+                    dispatch(storeAuthUser(res.user.uid));
+                }
+                
+                dispatch(changeAuthLoadingStatus(false));
+                dispatch(showSnackbar({
+                    open: true,
+                    message: 'Logged In successfully',
+                    color: 'success'
+                }));
+                resolve();
+            })
+            .catch(err => {
+                dispatch(changeAuthLoadingStatus(false));
+
+                let errMessage = err.message;
+                if(err.code === 'auth/user-not-found'){
+                    errMessage = 'The email address that you\'ve entered doesn\'t match any account.';
+                }
+                dispatch(showSnackbar({
+                    open: true,
+                    message: errMessage,
+                    color: 'error'
+                }));
                 reject(err);
             });
         });

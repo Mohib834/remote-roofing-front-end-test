@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Switch, Route, withRouter, RouteComponentProps } from 'react-router';
+import { Switch, Route, withRouter, RouteComponentProps, Redirect } from 'react-router';
 import { makeStyles } from '@material-ui/core';
 import firebase from 'firebase';
 import { connect } from 'react-redux';
@@ -16,9 +16,10 @@ import Shows from './containers/shows';
 import Show from './containers/show';
 import Register from './containers/register';
 import Login from './containers/login';
+import { ProtectedRoute } from 'components/partials/ProtectedRoute';
 
 type OwnProps = {}
-type Props = OwnProps & StoreDispatchProps & RouteComponentProps;
+type Props = OwnProps & StoreDispatchProps & StoreStateProps & RouteComponentProps;
 
 const useStyles = makeStyles((theme) => ({
 	app: {
@@ -41,6 +42,8 @@ const App: React.FC<Props> = (props) => {
     firebase.auth().onAuthStateChanged(user => {
       if(user){
         props.storeAuthUser(user.uid);
+      } else {
+        props.storeAuthUser(null);
       }
     });
   }, []);
@@ -48,13 +51,29 @@ const App: React.FC<Props> = (props) => {
   // For Full page requirement
   if(page.includes('register')){
     return (
-        <Register />
+        <Switch>
+            <ProtectedRoute 
+              protectAuthPages={true}
+              component={Register}
+              redirect="/"
+              user={props.user}
+            />
+        </Switch>
     );
   }
 
+
+
   if(page.includes('login')){
     return (
-        <Login />
+        <Switch>
+            <ProtectedRoute 
+              protectAuthPages={true}
+              component={Login}
+              redirect="/"
+              user={props.user}
+            />
+        </Switch>
     );
   }
 
@@ -88,8 +107,16 @@ type StoreDispatchProps = {
   storeAuthUser: (user: string | null) => void;
 }
 
+type StoreStateProps = {
+  user: string | null;
+}
+
+const mapStateToProps = (state: AppState): StoreStateProps => ({
+  user: state.userAuth.user
+});
+
 const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, AppActions>): StoreDispatchProps => ({
   storeAuthUser: (user) => dispatch(storeAuthUser(user))
 });
 
-export default withRouter(connect<{}, StoreDispatchProps, OwnProps, AppState>(null, mapDispatchToProps)(App));
+export default withRouter(connect<StoreStateProps, StoreDispatchProps, OwnProps, AppState>(mapStateToProps, mapDispatchToProps)(App));
