@@ -6,7 +6,7 @@ import { startFetchAShow } from 'store/actions/shows';
 import { AppActions } from 'store/actions/types';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 
-import { Container, Grid, makeStyles, Box, Typography, CircularProgress } from '@material-ui/core';
+import { Container, Grid, makeStyles, Box, Typography } from '@material-ui/core';
 
 import Ratings from '../components/partials/Ratings';
 
@@ -15,11 +15,7 @@ type Props = OwnProps & StoreStateProps & StoreDispatchProps & RouteComponentPro
 
 const useStyles = makeStyles({
    posterContainer: {
-    width: '100vw',
     height: '78vh',
-    position:'relative',
-    left: '50%',
-    transform:'translateX(-50%)',
     backgroundSize: 'cover',
     backgroundPosition: 'top',
    },

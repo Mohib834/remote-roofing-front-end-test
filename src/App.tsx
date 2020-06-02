@@ -25,7 +25,8 @@ const useStyles = makeStyles((theme) => ({
 	app: {
 		display:'flex',
 		flexDirection:'column',
-		minHeight: '100vh',
+    minHeight: '100vh',
+    background: '#181a1b',
    },
    main: {
       minHeight: 550,
@@ -51,14 +52,16 @@ const App: React.FC<Props> = (props) => {
   // For Full page requirement
   if(page.includes('register')){
     return (
-        <Switch>
-            <ProtectedRoute 
-              protectAuthPages={true}
-              component={Register}
-              redirect="/"
-              user={props.user}
-            />
-        </Switch>
+        <div className={app}>
+            <Switch>
+                <ProtectedRoute 
+                  protectAuthPages={true}
+                  component={Register}
+                  redirect="/"
+                  user={props.user}
+                />
+            </Switch>
+        </div>
     );
   }
 
@@ -66,14 +69,16 @@ const App: React.FC<Props> = (props) => {
 
   if(page.includes('login')){
     return (
-        <Switch>
-            <ProtectedRoute 
-              protectAuthPages={true}
-              component={Login}
-              redirect="/"
-              user={props.user}
-            />
-        </Switch>
+        <div className={app}>
+            <Switch>
+                <ProtectedRoute 
+                  protectAuthPages={true}
+                  component={Login}
+                  redirect="/"
+                  user={props.user}
+                />
+            </Switch>
+        </div>
     );
   }
 

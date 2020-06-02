@@ -61,9 +61,11 @@ const Shows: React.FC<Props> = (props) => {
 
     if(isLoading) return (
         <React.Fragment>
-            {/* query param */}
-            <TopBar text={category} /> 
-            <SkeletonLoader />
+            <section>
+                {/* query param */}
+                <TopBar text={category} /> 
+                <SkeletonLoader />
+            </section>
         </React.Fragment>
     );
 
@@ -71,7 +73,7 @@ const Shows: React.FC<Props> = (props) => {
         <section>
             {/* query param */}
             <TopBar text={category} />
-            <Container style={{ marginBottom: 120 }}>
+            <Container style={{ paddingBottom: 100 }}>
                 <SearchBar 
                   searchShows={searchShowsHandler}
                   placeholder={`Search ${category}`}

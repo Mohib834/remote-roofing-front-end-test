@@ -1,12 +1,21 @@
 import React from 'react';
 import { v4 as uuid } from 'uuid';
 
-import { Container, Grid, Typography } from '@material-ui/core';
+import { Container, Grid, Typography, makeStyles } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 
+const useStyles = makeStyles(theme => ({
+  skeleton: {
+    background: theme.palette.secondary.main,
+  }
+}));
+
 const Loader: React.FC = () => {
+    const { skeleton } = useStyles();
+
     const arr = new Array(12);
     const skeletons = [...arr];
+
 
     return (
         <Container>
@@ -19,7 +28,7 @@ const Loader: React.FC = () => {
                 >
                     <Typography variant="h2">
                         <Skeleton 
-                          style={{ background: 'rgba(0,0,0,.1)' }}
+                          className={skeleton}
                         />
                     </Typography>
                 </Grid>
@@ -30,13 +39,13 @@ const Loader: React.FC = () => {
                       style={{ marginRight: 40, marginBottom: 40, marginTop:-30, }}
                     > 
                         <Skeleton
-                          style={{ background: 'rgba(0,0,0,.1)' }}
+                          className={skeleton}
                           variant="rect"
                           width={230}
                           height={320}
                         />
                     </Grid>
-                ))}
+                  ))}
             </Grid>
         </Container>
     );

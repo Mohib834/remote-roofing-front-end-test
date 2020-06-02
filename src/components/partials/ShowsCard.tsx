@@ -113,7 +113,7 @@ const ShowsCard: React.FC<Props> = (props) => {
                 </Card>
             </ButtonBase>
             <Typography variant="body2"
-              style={{ fontWeight: 600, marginTop:5 }}
+              style={{ fontWeight: 600, marginTop:5, color:'#fff' }}
             >
                 { props.cardTitle }
             </Typography>
