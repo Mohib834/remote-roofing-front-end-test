@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { connect } from 'react-redux';
 import { AppState } from '../store/reducers';
 import { ThunkDispatch } from 'redux-thunk';
@@ -24,8 +24,7 @@ const Shows: React.FC<Props> = (props) => {
     // storing all movies in a single state to access them in the search functionality
     const [allShows, setAllShows] = useState<Array<{[key: string]: any}> | null>(null);
     const [category, setCategory] = useState<string>('');
-
-
+    
     useEffect(() => {
         // Getting category from query param
         const queryParams = new URLSearchParams(props.location.search);

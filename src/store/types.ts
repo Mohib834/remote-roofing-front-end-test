@@ -1,12 +1,20 @@
 // Shows state
 export type ShowsStateTypes = {
-    
+    show: {
+        sid: string;
+    } | null;
 }
 
 // User Auth state
+export type User = {
+    uid: string;
+    wishlist: Array<string>;
+    name: string;
+} | null;
+
 export type UserAuthStateTypes = {
     isLoading: boolean;
-    user: string | null;
+    user: User;
     snackbar: {
         message: string;
         color: "success" | "info" | "warning" | "error";

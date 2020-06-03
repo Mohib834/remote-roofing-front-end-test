@@ -4,7 +4,6 @@ import { UserAuthStateTypes } from '../types';
 const initState: UserAuthStateTypes = {
     user: null,
     isLoading: false,
-    
     snackbar: {
         open:false,
         message: '',

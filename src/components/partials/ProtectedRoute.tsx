@@ -1,14 +1,15 @@
 import React from 'react';
 import { Redirect } from 'react-router';
+import { User } from 'store/types';
 
 type ProtectedRouteProps = {
     component: React.FC;
-    user: string | null;
     redirect: string;
     protectAuthPages: boolean; 
+    user: User;
 }
 
-type Props = ProtectedRouteProps;
+type Props = ProtectedRouteProps
 
 export const ProtectedRoute: React.FC<Props> = (props): any => {
   const Component = props.component;

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { AppState } from 'store/reducers';
 import { ThunkDispatch } from 'redux-thunk';
-import { startFetchAShow } from 'store/actions/shows';
+import { startFetchAShow, startAddAShowToWishList } from 'store/actions/shows';
 import { AppActions } from 'store/actions/types';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { dateParser } from '../utils/helperFunctions';
@@ -10,8 +10,7 @@ import { dateParser } from '../utils/helperFunctions';
 // @ts-ignore
 import Tilt from 'react-tilt'; 
 import { BookmarkBorder as BookmarkBorderIcon, Bookmark as BookmarkIcon } from '@material-ui/icons';
-import { Container, Grid, makeStyles, Typography, Box } from '@material-ui/core';
-import Ratings from '../components/partials/Ratings';
+import { Container, Grid, makeStyles, Typography, Box, CircularProgress } from '@material-ui/core';
 
 type OwnProps = {};
 type Props = OwnProps & StoreDispatchProps & RouteComponentProps;
@@ -39,8 +38,10 @@ const Show: React.FC<Props> = (props) => {
     const [showData, setShowData] = useState<{[key: string]: any} | null>(null);
     const [categoryRef, setCategoryRef] = useState<string>();
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [addingToWishlist, setAddingToWishlist] = useState<boolean>(false);
+    const [itemAdded, setItemAdded] = useState<boolean>(false);
 
-    const { showContainer, showContent, showDetail } = useStyles();
+    const { showContainer, showContent } = useStyles();
 
     const imgBaseUrl = 'http://image.tmdb.org/t/p/w1280';
 
@@ -77,6 +78,16 @@ const Show: React.FC<Props> = (props) => {
             setIsLoading(false);
         });
     }, []);
+
+
+    const addToWishlistHandler = () => {
+        setAddingToWishlist(true);
+        props.addAShowToWishlist(showData?.id).then(() => {
+            console.log('added');
+            setItemAdded(true);
+            setAddingToWishlist(false);
+        });
+    };
 
 
     if(isLoading){
@@ -124,12 +135,23 @@ const Show: React.FC<Props> = (props) => {
                                 </Typography>
                             </Box>
                             <Box>
-                                <Typography style={{ display:'flex', alignItems: 'center' }}
+                                <Typography style={{ display:'flex', alignItems: 'center', cursor:'pointer' }}
+                                  onClick={addToWishlistHandler}
                                   variant="body2"
                                 >
-                                    <BookmarkBorderIcon fontSize="small"
-                                      style={{ marginRight: 6, marginLeft: -3 }}
-                                    /> Watch Later 
+                                    {!itemAdded ? (
+                                        <BookmarkBorderIcon fontSize="small"
+                                          style={{ marginRight: 6, marginLeft: -3 }}
+                                        /> 
+                                    ) : (
+                                        <BookmarkIcon fontSize="small"
+                                          style={{ marginRight: 6, marginLeft: -3 }}
+                                        /> 
+                                    )}
+                                    Bookmark
+                                    {addingToWishlist ? <CircularProgress size={10}
+                                      style={{ color:'#fff', marginLeft:10 }}
+                                    /> : null }
                                 </Typography>
                             </Box>
                         </Box>
@@ -155,10 +177,12 @@ const Show: React.FC<Props> = (props) => {
 
 type StoreDispatchProps = {
     fetchAShow: (sName: string, category: 'tv' | 'movie') => Promise<{[key: string]: any}>;
+    addAShowToWishlist: (sid: string) => Promise<unknown>;
 }
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, AppActions>, props: OwnProps): StoreDispatchProps => ({
     fetchAShow: (sName, category) => dispatch(startFetchAShow(sName, category)),
+    addAShowToWishlist: (sid: string) => dispatch(startAddAShowToWishList(sid))
 });
 
 export default withRouter(connect<{}, StoreDispatchProps, OwnProps, AppState>(null, mapDispatchToProps)(Show));

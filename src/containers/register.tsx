@@ -42,12 +42,16 @@ const Register: React.FC<Props> = (props) => {
 };
 
 type StoreDispatchProps = {
-    createUserAccount: (email: string, password: string) => Promise<unknown>;
+    createUserAccount: (payload: {
+        email: string;
+        password: string;
+        username: string;
+    }) => Promise<unknown>;
 }
 
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, AppActions>, ownProps: OwnProps): StoreDispatchProps => ({
-    createUserAccount: (email, password) => dispatch(startCreateUserAccount(email, password))
+    createUserAccount: (payload) => dispatch(startCreateUserAccount(payload))
 });
 
 export default connect<{}, StoreDispatchProps, OwnProps, AppState>(null, mapDispatchToProps)(Register);

@@ -3,10 +3,14 @@ import { makeStyles, Card, CardContent, Typography, TextField, Grid, Button, Cir
 import TheatersIcon from '@material-ui/icons/Theaters';
 import { connect } from 'react-redux';
 import { AppState } from 'store/reducers';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
+import { RouteComponentProps, withRouter, Link } from 'react-router-dom';
 
 type OwnProps = {
-    authFunction: (email: string, password: string) => Promise<unknown>;
+    authFunction: (payload: {
+        email: string;
+        password: string;
+        username: string;
+    }) => Promise<unknown>;
     auth: 'login' | 'register';
 }
 
@@ -170,7 +174,11 @@ const AuthCard: React.FC<Props> = (props) => {
             // Submit form and disable text fields
             setInputDisable(true);
             // Dispatch event to trigger authentication
-            props.authFunction(email, password).then(() => {
+            props.authFunction({
+                email,
+                password,
+                username, // Will be used in case of registration only
+            }).then(() => {
                 props.history.push('/');
             })
             .catch(() => setInputDisable(false));
@@ -362,7 +370,26 @@ const AuthCard: React.FC<Props> = (props) => {
                           item
                           xs={12}
                         >
-                            <Typography style={{ fontSize:12 }}>
+                            {props.auth === 'login' ? (
+                                <Typography style={{ fontSize: 12, position:'relative', top:-12 }}
+                                  align="left"
+                                >
+                                    Don't have an account? <Link to="/register"
+                                      style={{ color: '#fff' }}
+                                    >Register</Link>
+                                </Typography>
+                            ) : (
+                                <Typography style={{ fontSize: 12, position:'relative', top:-12 }}
+                                  align="left"
+                                >
+                                    Have an account? <Link to="/login"
+                                      style={{ color: '#fff' }}
+                                    >Login</Link>
+                                </Typography>
+                            )}
+                            <Typography style={{ fontSize:12 }}
+                              align="justify"
+                            >
                                 By clicking the above button, you consent to the use of cookies and similar technologies and instruct us to share information as described in our Privacy Policy.
                             </Typography>
                         </Grid>

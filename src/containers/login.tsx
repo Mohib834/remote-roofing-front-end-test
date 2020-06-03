@@ -38,11 +38,14 @@ const Login: React.FC<Props> = (props) => {
 };
 
 type StoreDispatchProps = {
-    loginUser: (email: string, password: string) => Promise<unknown>;
+    loginUser: (payload: {
+        email: string;
+        password: string;
+    }) => Promise<unknown>;
 }
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<any,any,AppActions>): StoreDispatchProps => ({
-    loginUser: (email, password) => dispatch(startLoginUser(email, password))
+    loginUser: (payload) => dispatch(startLoginUser(payload))
 });
 
 export default connect<{}, StoreDispatchProps, OwnProps, AppState>(null, mapDispatchToProps)(Login);

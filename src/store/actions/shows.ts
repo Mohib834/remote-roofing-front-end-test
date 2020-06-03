@@ -5,16 +5,25 @@ import { AppActions } from './types';
 import { Dispatch } from 'redux';
 import { AppState } from '../reducers';
 import { sortAndFilterShows } from '../../utils/helperFunctions';
+import firebase from 'firebase';
+import { showSnackbar } from './userAuth';
+
+const db = firebase.firestore();
 
 // Action creators
 
 // Dispatchs actions
-const fetchShowsData = (): AppActions => ({
+export const fetchShowsData = (): AppActions => ({
     type: "FETCH_SHOWS_DATA",
 });
 
-const fetchAShow = (): AppActions => ({
+export const fetchAShow = (): AppActions => ({
     type: "FETCH_A_SHOW"
+});
+
+export const addAShowToWatchList = (show: {sid: string} | null): AppActions => ({
+    type: "ADD_A_SHOW_TO_WATCH_LIST",
+    show,
 });
 
 
@@ -71,7 +80,37 @@ export const startFetchAShow = (sName: string, category: 'tv' | 'movie') => {
     };
 };
 
+export const startAddAShowToWishList = (sid: string) => {
+    return (dispatch: Dispatch<AppActions>, getState: () => AppState): Promise<unknown> => {
+        return new Promise((resolve, reject) => {
+            // get the current user uid
+            const uid = getState().userAuth.user?.uid;
 
+            // # Firebase
+            // Create the user with uid and store the sid in user wishlist property in the document
+            db.collection('users').doc(uid).update({
+                wishlist: firebase.firestore.FieldValue.arrayUnion(sid)
+            })
+            .then(() => {
+                dispatch(showSnackbar({
+                    open: true,
+                    color: 'success',
+                    message: 'Added to wishlist'
+                }));
+                resolve();
+            })
+            .catch(err => {
+                dispatch(showSnackbar({
+                    open: true,
+                    color: 'error',
+                    message: 'Show didn\'t add to wishlist, Try again'
+                }));
+                console.log(reject);
+                reject(err);
+            });
+        });
+    };
+};
 
 // # Not storing the shows data in the store because it is not required in any pages/container except shows container
 // # Instead using promises to send the data to shows pages and storing it in local state.

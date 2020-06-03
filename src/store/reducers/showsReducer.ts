@@ -2,7 +2,7 @@ import { ShowsActionsTypes } from '../actions/types';
 import { ShowsStateTypes } from '../types';
 
 const initState: ShowsStateTypes = {
-    
+    show: null,
 };
 
 export default (state: ShowsStateTypes = initState, action: ShowsActionsTypes): ShowsStateTypes => {
@@ -12,6 +12,11 @@ export default (state: ShowsStateTypes = initState, action: ShowsActionsTypes): 
             return state;
         case "FETCH_A_SHOW":
             return state;
+        case "ADD_A_SHOW_TO_WATCH_LIST":
+            return {
+                ...state,
+                show: action.show
+            };
     }
 
     return state;

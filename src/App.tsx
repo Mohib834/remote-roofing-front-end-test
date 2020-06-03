@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { AppState } from 'store/reducers';
 import { ThunkDispatch } from 'redux-thunk';
 import { AppActions } from 'store/actions/types';
-import { storeAuthUser } from './store/actions/userAuth';
+import { startFetchUserData } from './store/actions/userAuth';
 // Components
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -17,6 +17,7 @@ import Show from './containers/show';
 import Register from './containers/register';
 import Login from './containers/login';
 import { ProtectedRoute } from 'components/partials/ProtectedRoute';
+import { User } from 'store/types';
 
 type OwnProps = {}
 type Props = OwnProps & StoreDispatchProps & StoreStateProps & RouteComponentProps;
@@ -36,16 +37,13 @@ const useStyles = makeStyles((theme) => ({
 const App: React.FC<Props> = (props) => {
   const { app, main } = useStyles();
   const page = props.location.pathname;
-  console.log(page);
   // # When page loads
   // Checking if the user is logged in or not
-  // If he is logged in the store the user into redux store
+  // If he is logged in the store the userData into redux store
   useEffect(() => {
     firebase.auth().onAuthStateChanged(user => {
       if(user){
-        props.storeAuthUser(user.uid);
-      } else {
-        props.storeAuthUser(null);
+        props.startFetchUserData(user.uid);
       }
     });
   }, []);
@@ -60,6 +58,7 @@ const App: React.FC<Props> = (props) => {
                   component={Register}
                   redirect="/"
                   user={props.user}
+
                 />
             </Switch>
         </div>
@@ -117,19 +116,19 @@ const App: React.FC<Props> = (props) => {
 };
 
 type StoreDispatchProps = {
-  storeAuthUser: (user: string | null) => void;
+  startFetchUserData: (uid: string) => void;
 }
 
 type StoreStateProps = {
-  user: string | null;
+  user: User;
 }
 
-const mapStateToProps = (state: AppState): StoreStateProps => ({
-  user: state.userAuth.user
+const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, AppActions>): StoreDispatchProps => ({
+  startFetchUserData: (uid) => dispatch(startFetchUserData(uid)),
 });
 
-const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, AppActions>): StoreDispatchProps => ({
-  storeAuthUser: (user) => dispatch(storeAuthUser(user))
+const mapStateToProps = (state: AppState): StoreStateProps => ({
+  user: state.userAuth.user,
 });
 
 export default withRouter(connect<StoreStateProps, StoreDispatchProps, OwnProps, AppState>(mapStateToProps, mapDispatchToProps)(App));

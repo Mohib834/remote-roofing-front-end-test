@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import firebase from 'firebase';
+import React, { useEffect, useState, Dispatch } from 'react';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { AppState } from 'store/reducers';
-import firebase from 'firebase';
 
 import { AppBar, Toolbar, Button, Typography, Container, makeStyles } from '@material-ui/core';
+import { User } from 'store/types';
 import { AppActions } from 'store/actions/types';
-import { Dispatch } from 'redux';
 import { storeAuthUser } from 'store/actions/userAuth';
 
 type OwnProps = {};
@@ -97,19 +97,19 @@ const Navbar: React.FC<Props> = (props) => {
 };
 
 type StoreStateProps = {
-  user: string | null;
+  user: User;
 }
 
 type StoreDispatchProps = {
-  storeAuthUser: (user: string | null) => void;
+  storeAuthUser: (user: User) => void; 
 }
 
 const mapStateToProps = (state: AppState): StoreStateProps => ({
-  user: state.userAuth.user
+  user: state.userAuth.user,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<AppActions>): StoreDispatchProps => ({
   storeAuthUser: (user) => dispatch(storeAuthUser(user))
 });
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Navbar));
+export default withRouter(connect<StoreStateProps, StoreDispatchProps, OwnProps, AppState>(mapStateToProps, mapDispatchToProps)(Navbar));
