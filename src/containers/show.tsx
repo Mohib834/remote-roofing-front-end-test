@@ -2,18 +2,21 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { AppState } from 'store/reducers';
 import { ThunkDispatch } from 'redux-thunk';
-import { startFetchAShow, startAddAShowToWishList } from 'store/actions/shows';
+import { startFetchAShow, startToggleWishlist } from 'store/actions/shows';
 import { AppActions } from 'store/actions/types';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { dateParser } from '../utils/helperFunctions';
+import { User } from 'store/types';
 
 // @ts-ignore
 import Tilt from 'react-tilt'; 
 import { BookmarkBorder as BookmarkBorderIcon, Bookmark as BookmarkIcon } from '@material-ui/icons';
 import { Container, Grid, makeStyles, Typography, Box, CircularProgress } from '@material-ui/core';
+import CircularLoader from 'components/partials/CircularLoader';
+import bgImg from '../assets/show.png';
 
 type OwnProps = {};
-type Props = OwnProps & StoreDispatchProps & RouteComponentProps;
+type Props = OwnProps & StoreDispatchToProps & StoreStateToProps & RouteComponentProps;
 
 const useStyles = makeStyles(theme => ({
     showContainer: {
@@ -30,6 +33,25 @@ const useStyles = makeStyles(theme => ({
     },
     showDetail: {
         fontWeight: 600,
+    },
+    bookmark: { 
+        display:'inline-flex',
+        alignItems: 'center',
+        cursor:'pointer',
+        position: 'relative',
+        '&::after': {
+            content: '""',
+            position:'absolute',
+            width:94.65,
+            height: '100%',
+            opacity:0,
+            paddingBottom: 3,
+            transition: 'all .2s',
+            borderBottom: '1px solid',
+        },
+        '&:hover::after': {
+            opacity: 1,
+        }
     }
  }));
  
@@ -38,10 +60,10 @@ const Show: React.FC<Props> = (props) => {
     const [showData, setShowData] = useState<{[key: string]: any} | null>(null);
     const [categoryRef, setCategoryRef] = useState<string>();
     const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [addingToWishlist, setAddingToWishlist] = useState<boolean>(false);
+    const [togglingWishlist, setTogglingWishlist] = useState<boolean>(false);
     const [itemAdded, setItemAdded] = useState<boolean>(false);
 
-    const { showContainer, showContent } = useStyles();
+    const { showContainer, showContent, bookmark } = useStyles();
 
     const imgBaseUrl = 'http://image.tmdb.org/t/p/w1280';
 
@@ -70,7 +92,7 @@ const Show: React.FC<Props> = (props) => {
         
         // Just to use category to check the card and render the different property api ( series, movies)
         setCategoryRef(category);
-
+        
         // Fetch the show data
         props.fetchAShow(sName, category as 'movie' | 'tv')
         .then(response => {
@@ -79,29 +101,78 @@ const Show: React.FC<Props> = (props) => {
         });
     }, []);
 
+    useEffect(() => {
+        // When page loads ( using it here because it seems that startFetchUserData runs after fetchAShow)
+        const showId = showData?.id;
+        // Check if the movie is in wishlist already
+        const isBookmarked = props.user?.wishlist.includes(showId);
+        if(isBookmarked){
+            setItemAdded(true);
+        }
+    },[showData, props.user]);
 
     const addToWishlistHandler = () => {
-        setAddingToWishlist(true);
-        props.addAShowToWishlist(showData?.id).then(() => {
-            console.log('added');
+        setTogglingWishlist(true);
+        props.toggleWishlist(showData?.id, 'add').then(() => {
             setItemAdded(true);
-            setAddingToWishlist(false);
+            setTogglingWishlist(false);
+        })
+        .catch(err => {
+            setTogglingWishlist(false);
         });
+    };
+
+    const removeFromWishlistHandler = () => {
+        setTogglingWishlist(true);
+        props.toggleWishlist(showData?.id, 'remove').then(() => {
+            setItemAdded(false);
+            setTogglingWishlist(false);
+        });
+    };
+
+    const renderBookmark = () => {
+        if(!itemAdded){
+            return (
+                <Typography 
+                  className={bookmark}
+                  onClick={addToWishlistHandler}
+                  variant="body2"
+                >
+                    <BookmarkBorderIcon fontSize="small"
+                      style={{ marginRight: 6, marginLeft: -3 }}
+                    /> 
+                    Bookmark
+                </Typography>
+            );
+        } else {
+            return (
+                <Typography 
+                  className={bookmark}
+                  onClick={removeFromWishlistHandler}
+                  variant="body2"
+                >
+                    <BookmarkIcon fontSize="small"
+                      style={{ marginRight: 6, marginLeft: -3 }}
+                    /> 
+                    Bookmark
+                </Typography>
+            );
+        }
     };
 
 
     if(isLoading){
         return (
-            <React.Fragment>
-                Loading...
-            </React.Fragment>
+            <CircularLoader />
         );
     }
 
     return (
         <section 
           className={showContainer}
-          style={{ background: `linear-gradient(to top, rgba(0, 0, 0, .7) 40%, rgba(0, 0, 0, 0.4)), url('${imgBaseUrl + showData?.backdrop_path}')` }}
+          style={{ background: showData?.backdrop_path &&
+            `linear-gradient(to top, rgba(0, 0, 0, .7) 40%, rgba(0, 0, 0, 0.4)), url('${imgBaseUrl + showData.backdrop_path}')`
+         }}
         >
             <Container
               style={{ height: '100%' }}
@@ -134,25 +205,11 @@ const Show: React.FC<Props> = (props) => {
                                     {showData?.overview}
                                 </Typography>
                             </Box>
-                            <Box>
-                                <Typography style={{ display:'flex', alignItems: 'center', cursor:'pointer' }}
-                                  onClick={addToWishlistHandler}
-                                  variant="body2"
-                                >
-                                    {!itemAdded ? (
-                                        <BookmarkBorderIcon fontSize="small"
-                                          style={{ marginRight: 6, marginLeft: -3 }}
-                                        /> 
-                                    ) : (
-                                        <BookmarkIcon fontSize="small"
-                                          style={{ marginRight: 6, marginLeft: -3 }}
-                                        /> 
-                                    )}
-                                    Bookmark
-                                    {addingToWishlist ? <CircularProgress size={10}
-                                      style={{ color:'#fff', marginLeft:10 }}
-                                    /> : null }
-                                </Typography>
+                            <Box style={{ display:'flex', alignItems: 'center' }}>
+                                { renderBookmark() }
+                                {togglingWishlist ? <CircularProgress size={10}
+                                  style={{ color:'#fff', marginLeft:10 }}
+                                /> : null }
                             </Box>
                         </Box>
                     </Grid>
@@ -163,9 +220,16 @@ const Show: React.FC<Props> = (props) => {
                     >
                         <Box>
                             <Tilt options={options}>
-                                <img src={`http://image.tmdb.org/t/p/w342/${showData?.poster_path}`}
-                                  alt=""
-                                />
+                                {showData?.poster_path ? (
+                                    <img src={`http://image.tmdb.org/t/p/w342/${showData?.poster_path}`}
+                                      alt=""
+                                    />
+                                ) : (
+                                    <img src={bgImg}
+                                      style={{ maxWidth: 400 }}
+                                      alt=""
+                                    />
+                                )}
                             </Tilt>
                         </Box>
                     </Grid>
@@ -175,14 +239,22 @@ const Show: React.FC<Props> = (props) => {
     );
 };
 
-type StoreDispatchProps = {
+type StoreDispatchToProps = {
     fetchAShow: (sName: string, category: 'tv' | 'movie') => Promise<{[key: string]: any}>;
-    addAShowToWishlist: (sid: string) => Promise<unknown>;
+    toggleWishlist: (sid: string, ToggleAction: "add" | "remove") => Promise<unknown>;
 }
 
-const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, AppActions>, props: OwnProps): StoreDispatchProps => ({
+type StoreStateToProps = {
+    user: User;
+}
+
+const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, AppActions>, props: OwnProps): StoreDispatchToProps => ({
     fetchAShow: (sName, category) => dispatch(startFetchAShow(sName, category)),
-    addAShowToWishlist: (sid: string) => dispatch(startAddAShowToWishList(sid))
+    toggleWishlist: (sid, toggleAction) => dispatch(startToggleWishlist(sid, toggleAction))
 });
 
-export default withRouter(connect<{}, StoreDispatchProps, OwnProps, AppState>(null, mapDispatchToProps)(Show));
+const mapStateToProps = (state: AppState): StoreStateToProps => ({
+    user: state.userAuth.user
+});
+
+export default withRouter(connect<StoreStateToProps, StoreDispatchToProps, OwnProps, AppState>(mapStateToProps, mapDispatchToProps)(Show));

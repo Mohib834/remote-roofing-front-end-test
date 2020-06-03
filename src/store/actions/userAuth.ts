@@ -62,11 +62,20 @@ export const startCreateUserAccount = ({ email, password, username }: {
             }
             catch(err){
                 console.log(err);
+                console.log(err.message);
+
+                let message = "Something went wrong";
+
+                if(err.code === 'auth/email-already-in-use'){
+                    message = "Email already in use";
+                }
+
                 dispatch(showSnackbar({
                     open: true,
-                    message: 'Something went wrong',
+                    message: message,
                     color: 'error'
                 }));
+
                 dispatch(changeAuthLoadingStatus(false));
                 reject(err);
             }
@@ -103,11 +112,16 @@ export const startLoginUser = ({ email, password }: {email: string; password: st
             }
             catch(err){
                 dispatch(changeAuthLoadingStatus(false));
-                console.log(err);
+               
                 let errMessage = err.message;
+               
                 if(err.code === 'auth/user-not-found'){
                     errMessage = 'The email address that you\'ve entered doesn\'t match any account.';
                 }
+                if(err.code === 'auth/wrong-password'){
+                    errMessage = 'The password you\'ve entered is incorrect.';
+                }
+               
                 dispatch(showSnackbar({
                     open: true,
                     message: errMessage,

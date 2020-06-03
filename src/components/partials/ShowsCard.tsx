@@ -23,6 +23,12 @@ const useStyles = makeStyles((theme) => ({
         alignItems: 'center',
         backgroundSize: 'contain',
         position:'relative',
+        '&:hover': {
+            "& $showsGenre":{
+                top:'50%',
+                opacity:1,
+            }
+        }
     },
     categoryImg: {
         width: '70%',
@@ -34,12 +40,6 @@ const useStyles = makeStyles((theme) => ({
         padding: '30px !important', 
         display: 'flex',
         justifyContent: 'center',
-        '&:hover': {
-            "& $showsGenre":{
-                top:'47%',
-                opacity:1,
-            }
-        }
     },
     showsGenre: {
         position:'absolute',
@@ -101,8 +101,8 @@ const ShowsCard: React.FC<Props> = (props) => {
                             </React.Fragment>
                         ): (
                             <React.Fragment>
-                                <CircularProgress size={30}
-                                  style={{ display: isImgLoading ? 'block' : 'none' }}
+                                <CircularProgress size={25}
+                                  style={{ color:'#fff', display: isImgLoading ? 'block' : 'none' }}
                                 />
                                 <img className={showsImg}
                                   src={props.imgUrl}

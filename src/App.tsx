@@ -37,16 +37,18 @@ const useStyles = makeStyles((theme) => ({
 const App: React.FC<Props> = (props) => {
   const { app, main } = useStyles();
   const page = props.location.pathname;
-  // # When page loads
-  // Checking if the user is logged in or not
-  // If he is logged in the store the userData into redux store
+
   useEffect(() => {
+    // # When page loads
+    // Checking if the user is logged in or not
+    // If he is logged in the store the userData into redux store
     firebase.auth().onAuthStateChanged(user => {
       if(user){
         props.startFetchUserData(user.uid);
       }
     });
   }, []);
+  
 
   // For Full page requirement
   if(page === '/register'){

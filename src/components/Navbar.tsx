@@ -32,9 +32,9 @@ const Navbar: React.FC<Props> = (props) => {
     firebase.auth().signOut().
     then(() => {
       props.storeAuthUser(null);
+      // Redirect to login page
       props.history.push('/login');
     });
-    // Redirect to login page
   };
 
   useEffect(() => {

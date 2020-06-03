@@ -6,7 +6,7 @@ import { Dispatch } from 'redux';
 import { AppState } from '../reducers';
 import { sortAndFilterShows } from '../../utils/helperFunctions';
 import firebase from 'firebase';
-import { showSnackbar } from './userAuth';
+import { showSnackbar, storeAuthUser } from './userAuth';
 
 const db = firebase.firestore();
 
@@ -53,7 +53,11 @@ export const startFetchShowsData = (category: string) => {
                 resolve(shows);
             })
             .catch(err => {
-                console.log(err);
+                dispatch(showSnackbar({
+                    open: true,
+                    color: 'error',
+                    message: 'Seems like you got disconnected.',
+                }));
                 reject(err);
             });
         });
@@ -80,34 +84,69 @@ export const startFetchAShow = (sName: string, category: 'tv' | 'movie') => {
     };
 };
 
-export const startAddAShowToWishList = (sid: string) => {
+export const startToggleWishlist = (sid: string, toggleAction: "add" | "remove") => {
     return (dispatch: Dispatch<AppActions>, getState: () => AppState): Promise<unknown> => {
-        return new Promise((resolve, reject) => {
-            // get the current user uid
-            const uid = getState().userAuth.user?.uid;
+        return new Promise(async (resolve, reject) => {
+            try {
+                const user = getState().userAuth.user;
+                // If user is not logged in
+                if(!user){
+                    throw new Error("no-authentication");
+                }
+    
+                // Get the current user uid and wishlist from store
+                const { uid, wishlist, name } = getState().userAuth.user!;
+    
+                let newWishlist: Array<string>;
+    
+                if(toggleAction === 'add'){
+                    // Add the new wishlist item to current wishlist
+                    newWishlist = wishlist?.map(w => w);
+                    newWishlist.push(sid);
+                } else {
+                    newWishlist = wishlist?.filter(id => id !== sid);
+                }
+                // # Firebase
+                // Get the user with uid and store the sid in user wishlist property in the document
+                await db.collection('users').doc(uid).update({
+                    wishlist: newWishlist
+                });
+            
+                // Update the store with the new wishlist
+                dispatch(storeAuthUser({
+                    uid,
+                    name,
+                    wishlist: newWishlist,
+                }));
 
-            // # Firebase
-            // Create the user with uid and store the sid in user wishlist property in the document
-            db.collection('users').doc(uid).update({
-                wishlist: firebase.firestore.FieldValue.arrayUnion(sid)
-            })
-            .then(() => {
+                let snackbarMessage = 'Added to wishlist';
+
+                if(toggleAction === 'remove'){
+                    snackbarMessage = 'Removed from wishlist';
+                }
+
                 dispatch(showSnackbar({
                     open: true,
                     color: 'success',
-                    message: 'Added to wishlist'
+                    message: snackbarMessage,
                 }));
+                
                 resolve();
-            })
-            .catch(err => {
+            }catch(err){
+                let message = 'Show didn\'t add to wishlist, Try again';
+
+                if(err.message === 'no-authentication'){
+                    message = 'You need to login in order to bookmark';
+                }
+
                 dispatch(showSnackbar({
                     open: true,
                     color: 'error',
-                    message: 'Show didn\'t add to wishlist, Try again'
+                    message: message,
                 }));
-                console.log(reject);
+
                 reject(err);
-            });
+            }
         });
     };
 };
