@@ -1,7 +1,7 @@
 
 import mviApi from '../../api/rRApi';
 import tmdbApi from '../../api/tmdbApi';
-import { ChangeLoadingStatus, AppActions } from './types';
+import { AppActions } from './types';
 import { Dispatch } from 'redux';
 import { AppState } from '../reducers';
 import { sortAndFilterShows } from '../../utils/helperFunctions';
@@ -9,13 +9,6 @@ import { sortAndFilterShows } from '../../utils/helperFunctions';
 // Action creators
 
 // Dispatchs actions
-const changeLoadingStatus = (payload: boolean): ChangeLoadingStatus  => {
-    return {
-        type:'CHANGE_LOADING_STATUS',
-        isLoading: payload,
-    };
-};
-
 const fetchShowsData = (): AppActions => ({
     type: "FETCH_SHOWS_DATA",
 });
@@ -28,7 +21,6 @@ const fetchAShow = (): AppActions => ({
 // Thunk Dispatch actions ( This is what we are going to use all over the components )
 export const startFetchShowsData = (category: string) => {
     return (dispatch: Dispatch<AppActions>, getState: () => AppState): Promise<Array<{[key: string]: any}>> => {
-        dispatch(changeLoadingStatus(true));
         return new Promise((resolve, reject) => {
             mviApi.get('')
             .then(response => {
@@ -47,7 +39,6 @@ export const startFetchShowsData = (category: string) => {
 
                 // Dispatching
                 dispatch(fetchShowsData());
-                dispatch(changeLoadingStatus(false));
 
                 // Sending the shows data.
                 resolve(shows);
@@ -63,7 +54,6 @@ export const startFetchShowsData = (category: string) => {
 export const startFetchAShow = (sName: string, category: 'tv' | 'movie') => {
     return (dispatch: Dispatch<AppActions>, getState: () => AppState): Promise<{[key: string]: any}> => {
         return new Promise((resolve,reject) => {
-            dispatch(changeLoadingStatus(true));
             // # Using Remote Roofing shows title in another api to fetch more detail about a show
             tmdbApi.get(`/search/${category}`, {
                 params: {
@@ -72,11 +62,9 @@ export const startFetchAShow = (sName: string, category: 'tv' | 'movie') => {
                 }
             }).then(res => {
                 dispatch(fetchAShow());
-                dispatch(changeLoadingStatus(false));
                 resolve(res.data.results[0]);
             }).catch(err => {
                 reject(err);
-                dispatch(changeLoadingStatus(false));
                 console.log(err);
             });
         });

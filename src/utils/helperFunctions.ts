@@ -17,3 +17,7 @@ export const sortAndFilterShows = (shows: Array<{[key: string]: any}>): Array<{[
 
     return shows;
 };
+
+export const dateParser = (date: string): string | undefined => { // eg 2019-4-4 --> 2019 #For tmdb data
+    if(date) return date.split('-')[0];
+};

@@ -15,17 +15,16 @@ import SkeletonLoader from '../components/partials/SkeletonLoader';
 import SearchBar from '../components/partials/SearchBar';
 
 type OwnProps = {};
-type ShowsStates = {}
 
-type Props = OwnProps & StoreDispatchProps & StoreStateProps & RouteComponentProps
+type Props = OwnProps & StoreDispatchProps & RouteComponentProps
 
 const Shows: React.FC<Props> = (props) => {
-    const { fetchShows, isLoading } = props;
-
     const [shows, setShows] = useState<Array<{[key: string]: any}> | null>(null);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
     // storing all movies in a single state to access them in the search functionality
     const [allShows, setAllShows] = useState<Array<{[key: string]: any}> | null>(null);
     const [category, setCategory] = useState<string>('');
+
 
     useEffect(() => {
         // Getting category from query param
@@ -35,10 +34,13 @@ const Shows: React.FC<Props> = (props) => {
         // Set category name to state ( To use it as a prop for topbar)
         setCategory(showsCategory);
         // Fetching the category data
-        fetchShows(showsCategory).then(response => { // pass series Route query param
+        props.fetchShows(showsCategory).then(response => { // pass series Route query param
             setShows(response);
             setAllShows(response);
+            
+            setIsLoading(false);
         });
+
     }, []);
 
     const searchShowsHandler = (value: string) => {
@@ -101,21 +103,13 @@ const Shows: React.FC<Props> = (props) => {
     );
 };
 
-type StoreStateProps = {
-    isLoading: boolean;
-}
-
 type StoreDispatchProps = {
     fetchShows: (category: string) => Promise<Array<{[key: string]: any}>>;
 }
-
-const mapStateToProps = (state: AppState, ownProps: OwnProps): StoreStateProps => ({
-    isLoading: state.shows.isLoading,
-});
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, AppActions>, ownProps: OwnProps): StoreDispatchProps => ({
     fetchShows: (category: string) => dispatch(actionCreator.startFetchShowsData(category))
 });
 
 
-export default withRouter(connect<StoreStateProps, StoreDispatchProps, OwnProps, AppState>(mapStateToProps, mapDispatchToProps)(Shows));
+export default withRouter(connect<{}, StoreDispatchProps, OwnProps, AppState>(null, mapDispatchToProps)(Shows));

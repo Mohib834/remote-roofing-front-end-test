@@ -26,7 +26,6 @@ const useStyles = makeStyles(theme => ({
 
 const AuthCard: React.FC<Props> = (props) => {
     const { authCard } = useStyles();
-
     const [inputDisable, setInputDisable] = useState(false);
 
     // Textfield input states
@@ -52,9 +51,9 @@ const AuthCard: React.FC<Props> = (props) => {
     const [step, setStep] = useState<number | null>(1);
 
     useEffect(() => {
-        // Checking if the page is login
+        // Checking if the page is login page
         if(props.auth === 'login'){
-            // if it is login then set steps to null ( For login text field to render )
+            // if it is login page then set steps to null ( For login text field to render )
             setStep(null);
         }
     }, []);

@@ -2,7 +2,7 @@ import { ShowsActionsTypes } from '../actions/types';
 import { ShowsStateTypes } from '../types';
 
 const initState: ShowsStateTypes = {
-    isLoading: true,
+    
 };
 
 export default (state: ShowsStateTypes = initState, action: ShowsActionsTypes): ShowsStateTypes => {
@@ -12,11 +12,6 @@ export default (state: ShowsStateTypes = initState, action: ShowsActionsTypes): 
             return state;
         case "FETCH_A_SHOW":
             return state;
-        case "CHANGE_LOADING_STATUS":
-            return {
-                ...state,
-                isLoading: action.isLoading
-            };
     }
 
     return state;

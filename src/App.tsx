@@ -36,6 +36,7 @@ const useStyles = makeStyles((theme) => ({
 const App: React.FC<Props> = (props) => {
   const { app, main } = useStyles();
   const page = props.location.pathname;
+  console.log(page);
   // # When page loads
   // Checking if the user is logged in or not
   // If he is logged in the store the user into redux store
@@ -50,7 +51,7 @@ const App: React.FC<Props> = (props) => {
   }, []);
 
   // For Full page requirement
-  if(page.includes('register')){
+  if(page === '/register'){
     return (
         <div className={app}>
             <Switch>
@@ -65,9 +66,7 @@ const App: React.FC<Props> = (props) => {
     );
   }
 
-
-
-  if(page.includes('login')){
+  if(page === '/login'){
     return (
         <div className={app}>
             <Switch>
@@ -76,6 +75,18 @@ const App: React.FC<Props> = (props) => {
                   component={Login}
                   redirect="/"
                   user={props.user}
+                />
+            </Switch>
+        </div>
+    );
+  }
+
+  if(page === '/show'){
+    return (
+        <div className={app}>
+            <Switch>
+                <Route path="/show"
+                  render={() => <Show />}
                 />
             </Switch>
         </div>
@@ -92,9 +103,6 @@ const App: React.FC<Props> = (props) => {
                 <Route
                   path="/shows"
                   render={() => <Shows />}
-                />
-                <Route path="/show"
-                  render={() => <Show />}
                 />
                 <Route 
                   path="/"

@@ -82,7 +82,9 @@ const ShowsCard: React.FC<Props> = (props) => {
 
     return (
         <Box>
-            <ButtonBase onClick={redirect}>
+            <ButtonBase onClick={redirect}
+              style={{ boxShadow: '0 8px 15px rgba(0, 0, 0, .5)' }}
+            >
                 <Card
                   color="secondary"
                   className={showsCard}

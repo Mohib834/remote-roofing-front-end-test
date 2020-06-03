@@ -1,6 +1,6 @@
 // Shows state
 export type ShowsStateTypes = {
-    isLoading: boolean;
+    
 }
 
 // User Auth state
