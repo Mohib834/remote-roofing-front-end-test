@@ -1,26 +1,31 @@
-import React, { useState, Dispatch } from 'react';
+import React, { useState, useEffect } from 'react';
 import firebase from 'firebase';
 import { connect } from 'react-redux';
 import { storeAuthUser } from 'store/actions/userAuth';
+import { startFetchWishlistShows } from 'store/actions/shows';
 import { User } from 'store/types';
 import { AppActions } from 'store/actions/types';
 import { AppState } from 'store/reducers';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
+import { ThunkDispatch } from 'redux-thunk';
+import { v4 as uuid } from 'uuid';
 
 import TopBar from 'components/partials/TopBar';
 
 import { Container, Grid, makeStyles, Typography, Tabs, Tab, Paper, Box } from '@material-ui/core';
-import { Bookmark as BookmarkIcon, Person as PersonIcon, ExitToApp as ExitToAppIcon } from '@material-ui/icons';
-import { TabPanel } from '@material-ui/lab';
+import { Bookmark as BookmarkIcon, Person as PersonIcon, ExitToApp as ExitToAppIcon, UsbOutlined } from '@material-ui/icons';
+import ShowsCard from 'components/partials/ShowsCard';
+import CircularLoader from 'components/partials/CircularLoader';
 
 
 type OwnProps = {};
 
-type Props = OwnProps & RouteComponentProps & StoreDispatchProps
+type Props = OwnProps & RouteComponentProps & StoreDispatchProps & StoreStateProps;
 
 const useStyles = makeStyles(theme => ({
     account: {
         color: '#fff',
+        marginBottom: 160,
     },
     accountCard: {
         padding: '30px 10px 40px 10px',
@@ -39,7 +44,8 @@ const useStyles = makeStyles(theme => ({
             }
         },
         '& .MuiTabs-indicator': {
-            background: theme.palette.primary.main
+            background: theme.palette.primary.main,
+            width: 3,
         }
     },
     tabIcon: {
@@ -47,11 +53,13 @@ const useStyles = makeStyles(theme => ({
         marginBottom:'4px !important',
     },
     tabContent: {
-        background: theme.palette.secondary.main
+        background: theme.palette.secondary.main,
+        minHeight: 520
     },
     tabContentTitle: {
+        marginBottom: 35,
         position: 'relative',
-        display:'inline',
+        display:'inline-block',
         '&::after': {
             content: '""',
             position:'absolute',
@@ -64,12 +72,31 @@ const useStyles = makeStyles(theme => ({
             transition: 'all .2s',
             borderBottom: '1px solid',
         },
+    },
+    wishlistShow: {
+        marginBottom: 43,
+        '&:not(:last-child)': {
+            marginRight: 11,
+        }
     }
 }));
 
 const Account: React.FC<Props> = (props) => {
-    const { account, accountCard, tabIcon, tabContent, tabContentTitle } = useStyles();
+    const { account, accountCard, tabIcon, tabContent, tabContentTitle, wishlistShow } = useStyles();
+    
     const [tabIdx, setTabIdx] = useState(0);
+    const [wishlistShows, setWishlistShows] = useState<Array<{[key: string]: any}> | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
+
+    useEffect(() => {
+        setIsLoading(true);
+        props.startFetchWishlistShows()
+        .then(res => {
+            console.log(res);
+            setWishlistShows(res);
+            setIsLoading(false);
+        });
+    }, [props.user?.wishlist]);
 
     const onTabChangeHandler = (event: React.ChangeEvent<{}>, idx: any) => {
         // If logout tab is clicked
@@ -85,6 +112,7 @@ const Account: React.FC<Props> = (props) => {
         setTabIdx(idx);
     };
 
+
     const renderTabsContent = () => {
         if(tabIdx === 0){
             return (
@@ -94,6 +122,26 @@ const Account: React.FC<Props> = (props) => {
                     >
                         Wishlist
                     </Typography>
+                    { isLoading ? (
+                        <CircularLoader />
+                    ) : (
+                        <Grid container>
+                            {wishlistShows?.map(s => (
+                                <Grid item
+                                  key={uuid()}
+                                  className={wishlistShow}
+                                >
+                                    <ShowsCard
+                                      width={200}
+                                      height={300}
+                                      cardTitle={s.title}
+                                      imgUrl={'http://image.tmdb.org/t/p/w342/' + s.poster_path}
+                                      link={`/show?sname=${s.title.toLowerCase()}&category=${s.category.toLowerCase()}`}
+                                    />
+                                </Grid>
+                            ))}
+                        </Grid>
+                    )}
                 </Box>
             );
         } else if(tabIdx === 1){
@@ -166,12 +214,23 @@ const Account: React.FC<Props> = (props) => {
     );
 };
 
-type StoreDispatchProps = {
-    storeAuthUser: (user: User) => void;
+type StoreStateProps = {
+    user: User;
 }
 
-const mapDispatchToProps = (dispatch: Dispatch<AppActions>): StoreDispatchProps => ({
-    storeAuthUser: (user) => dispatch(storeAuthUser(user))
+type StoreDispatchProps = {
+    storeAuthUser: (user: User) => void;
+    startFetchWishlistShows: () => Promise<Array<{[key: string]: any}>>;
+}
+
+const mapStateToProps = (state: AppState): StoreStateProps => ({
+    user: state.userAuth.user
 });
 
-export default withRouter(connect<{}, StoreDispatchProps, OwnProps, AppState>(null, mapDispatchToProps)(Account));
+const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, AppActions>): StoreDispatchProps => ({
+    storeAuthUser: (user) => dispatch(storeAuthUser(user)),
+    startFetchWishlistShows: () => dispatch(startFetchWishlistShows())
+});
+
+
+export default withRouter(connect<StoreStateProps, StoreDispatchProps, OwnProps, AppState>(mapStateToProps, mapDispatchToProps)(Account));

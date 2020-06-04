@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { AppBar, Toolbar, makeStyles, fade, InputBase, Badge } from '@material-ui/core';
 import { Search as SearchIcon  } from '@material-ui/icons';
-import { Bookmark as BookmarkIcon } from '@material-ui/icons';
 import { connect } from 'react-redux';
 import { User } from 'store/types';
 import { AppState } from 'store/reducers';
+import { RouteComponentProps, withRouter } from 'react-router-dom';
 
+import { Bookmark as BookmarkIcon } from '@material-ui/icons';
+import { AppBar, Toolbar, makeStyles, fade, InputBase, Badge, ButtonBase } from '@material-ui/core';
 
 type OwnProps = {
   placeholder: string;
   searchShows: (value: string) => void;
 }
 
-type Props = OwnProps & StoreStateProps;
+type Props = OwnProps & StoreStateProps & RouteComponentProps
 
 const useStyles = makeStyles((theme) => ({
   search:{
@@ -49,15 +50,22 @@ const SearchBar: React.FC<Props> = (props) => {
 
     const [searchedText, setSearchedText] = useState('');
 
-    const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-      setSearchedText(e.target.value);
-    };
-
+    
     // Sending the searched text to parent when its state gets updated
     useEffect(() => {
       props.searchShows(searchedText);
     }, [searchedText]);
 
+    const wishlistItemsLength =  () => {
+      if(props.user){
+        const length = props.user?.wishlist.movie.length + props.user?.wishlist.tv.length;
+        return length;
+      }
+    };
+
+    const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchedText(e.target.value);
+    };
 
     return (
         <AppBar
@@ -80,12 +88,15 @@ const SearchBar: React.FC<Props> = (props) => {
                     />
                 </div>
                 <Badge 
-                  badgeContent={props.user?.wishlist.length}
+                  onClick={() => props.history.push('/account')}
+                  style={{ marginLeft:'auto', marginRight: 10, cursor:'pointer' }}
+                  badgeContent={wishlistItemsLength()}
+                  showZero
                   color="secondary"
-                  style={{ marginLeft:'auto', marginRight: 10 }}
                 >
                     <BookmarkIcon fontSize="small"/>
                 </Badge>
+        
             </Toolbar>
         </AppBar>
     );
@@ -99,4 +110,4 @@ const mapStoreStateToProps = (state: AppState): StoreStateProps => ({
   user: state.userAuth.user
 });
 
-export default connect<StoreStateProps, {}, OwnProps, AppState>(mapStoreStateToProps)(SearchBar);
+export default  withRouter(connect<StoreStateProps, {}, OwnProps, AppState>(mapStoreStateToProps)(SearchBar));

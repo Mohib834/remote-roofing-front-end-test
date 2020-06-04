@@ -58,7 +58,7 @@ const useStyles = makeStyles(theme => ({
 
 const Show: React.FC<Props> = (props) => {
     const [showData, setShowData] = useState<{[key: string]: any} | null>(null);
-    const [categoryRef, setCategoryRef] = useState<string>();
+    const [categoryRef, setCategoryRef] = useState<"tv" | "movie">("movie");
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [togglingWishlist, setTogglingWishlist] = useState<boolean>(false);
     const [itemAdded, setItemAdded] = useState<boolean>(false);
@@ -84,18 +84,19 @@ const Show: React.FC<Props> = (props) => {
         const sName = queryParams.get('sname') as string;
         let category = queryParams.get('category');
 
-        if(category === 'movies') {
+        if(category === 'movies' || category === 'movie') {
             category = 'movie';
         } else {
             category ='tv';
         }
         
         // Just to use category to check the card and render the different property api ( series, movies)
-        setCategoryRef(category);
+        setCategoryRef(category as "movie" | "tv");
         
         // Fetch the show data
         props.fetchAShow(sName, category as 'movie' | 'tv')
         .then(response => {
+            console.log(response);
             setShowData(response);
             setIsLoading(false);
         });
@@ -104,8 +105,8 @@ const Show: React.FC<Props> = (props) => {
     useEffect(() => {
         // When page loads ( using it here because it seems that startFetchUserData runs after fetchAShow)
         const showId = showData?.id;
-        // Check if the movie is in wishlist already
-        const isBookmarked = props.user?.wishlist.includes(showId);
+        // Check if the movie is in wishlist already (wishlist[movie | series])
+        const isBookmarked = props.user?.wishlist[categoryRef].includes(showId);
         if(isBookmarked){
             setItemAdded(true);
         }
@@ -113,7 +114,7 @@ const Show: React.FC<Props> = (props) => {
 
     const addToWishlistHandler = () => {
         setTogglingWishlist(true);
-        props.toggleWishlist(showData?.id, 'add').then(() => {
+        props.toggleWishlist(showData?.id, categoryRef, 'add').then(() => {
             setItemAdded(true);
             setTogglingWishlist(false);
         })
@@ -124,7 +125,7 @@ const Show: React.FC<Props> = (props) => {
 
     const removeFromWishlistHandler = () => {
         setTogglingWishlist(true);
-        props.toggleWishlist(showData?.id, 'remove').then(() => {
+        props.toggleWishlist(showData?.id, categoryRef, 'remove').then(() => {
             setItemAdded(false);
             setTogglingWishlist(false);
         });
@@ -163,7 +164,7 @@ const Show: React.FC<Props> = (props) => {
 
     if(isLoading){
         return (
-            <CircularLoader />
+            <CircularLoader fullHeight/>
         );
     }
 
@@ -185,7 +186,7 @@ const Show: React.FC<Props> = (props) => {
                       style={{ height: '100%', display:'flex',alignItems:'center' }}
                     >
                         <Box className={showContent}>
-                            <Box>
+                            <Box style={{ marginBottom: 30 }}>
                                 <Typography variant="body2">{categoryRef === 'movie' ? (<React.Fragment>{dateParser(showData?.release_date)}</React.Fragment>) :
                                 (<React.Fragment>{dateParser(showData?.first_air_date)}</React.Fragment>)}
                                 </Typography>
@@ -205,7 +206,7 @@ const Show: React.FC<Props> = (props) => {
                                     {showData?.overview}
                                 </Typography>
                             </Box>
-                            <Box style={{ display:'flex', alignItems: 'center' }}>
+                            <Box style={{ display:'flex', alignItems: 'center', marginTop:30 }}>
                                 { renderBookmark() }
                                 {togglingWishlist ? <CircularProgress size={10}
                                   style={{ color:'#fff', marginLeft:10 }}
@@ -241,7 +242,7 @@ const Show: React.FC<Props> = (props) => {
 
 type StoreDispatchToProps = {
     fetchAShow: (sName: string, category: 'tv' | 'movie') => Promise<{[key: string]: any}>;
-    toggleWishlist: (sid: string, ToggleAction: "add" | "remove") => Promise<unknown>;
+    toggleWishlist: (sid: string, category: 'tv' | 'movie', ToggleAction: "add" | "remove") => Promise<unknown>;
 }
 
 type StoreStateToProps = {
@@ -250,7 +251,7 @@ type StoreStateToProps = {
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, AppActions>, props: OwnProps): StoreDispatchToProps => ({
     fetchAShow: (sName, category) => dispatch(startFetchAShow(sName, category)),
-    toggleWishlist: (sid, toggleAction) => dispatch(startToggleWishlist(sid, toggleAction))
+    toggleWishlist: (sid, category, toggleAction) => dispatch(startToggleWishlist(sid, category, toggleAction))
 });
 
 const mapStateToProps = (state: AppState): StoreStateToProps => ({

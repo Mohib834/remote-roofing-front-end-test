@@ -35,21 +35,25 @@ export const startCreateUserAccount = ({ email, password, username }: {
         return new Promise(async (resolve, reject) => {
             try {
                 const res = await auth.createUserWithEmailAndPassword(email, password);
+
+                if(!res.user) throw new Error();
+
+                const user: User = {
+                    uid: res.user.uid,
+                    wishlist: {
+                        movie: [],
+                        tv: [],
+                    },
+                    name: username,
+                };
+
                 // Storing the data to redux
                 if(res.user?.uid){
-                    dispatch(storeAuthUser({
-                        uid: res.user.uid,
-                        wishlist: [],
-                        name: username,
-                    }));
+                    dispatch(storeAuthUser(user));
                 }
 
                 // Creating user in firebase firestore
-                await db.collection('users').doc(res.user?.uid).set({
-                    uid: res.user?.uid,
-                    username,
-                    wishlist: [],
-                });
+                await db.collection('users').doc(res.user?.uid).set(user);
 
                 dispatch(changeAuthLoadingStatus(false));
 

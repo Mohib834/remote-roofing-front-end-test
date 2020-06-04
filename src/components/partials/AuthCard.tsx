@@ -369,13 +369,14 @@ const AuthCard: React.FC<Props> = (props) => {
                         <Grid
                           item
                           xs={12}
+                          style={{ color: 'rgba(255,255,255,.8)' }}
                         >
                             {props.auth === 'login' ? (
                                 <Typography style={{ fontSize: 12, position:'relative', top:-12 }}
                                   align="left"
                                 >
                                     Don't have an account? <Link to="/register"
-                                      style={{ color: '#fff' }}
+                                      style={{ color: 'rgba(255,255,255,.8)' }}
                                     >Register</Link>
                                 </Typography>
                             ) : (
@@ -383,7 +384,7 @@ const AuthCard: React.FC<Props> = (props) => {
                                   align="left"
                                 >
                                     Have an account? <Link to="/login"
-                                      style={{ color: '#fff' }}
+                                      style={{ color: 'rgba(255,255,255,.8)' }}
                                     >Login</Link>
                                 </Typography>
                             )}

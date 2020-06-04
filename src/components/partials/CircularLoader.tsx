@@ -1,15 +1,17 @@
 import React from 'react';
 import { CircularProgress, Container, makeStyles } from '@material-ui/core';
 
-type Props = {};
+type Props = {
+    fullHeight?: boolean;
+};
 
 const useStyles = makeStyles({
-    loaderContainer: {
+    loaderContainer: (props: Props) => ({
         display: 'flex',
         justifyContent:'center',
         alignItems:'center',
-        height: '100vh',
-    },
+        height: props.fullHeight ? '100vh' : '38vh',
+    }),
     loader: {
         color: '#fff',
 
@@ -17,16 +19,18 @@ const useStyles = makeStyles({
 });
 
 const CircularLoader: React.FC<Props> = (props) => {
-    const { loader, loaderContainer } = useStyles();
+    const { loader, loaderContainer } = useStyles(props);
     return (
-        <section>
-            <Container className={loaderContainer}>
-                <CircularProgress className={loader}
-                  size={25}
-                />
-            </Container>
-        </section>
+        <Container className={loaderContainer}>
+            <CircularProgress className={loader}
+              size={25}
+            />
+        </Container>
     );
+};
+
+CircularLoader.defaultProps = {
+    fullHeight: false,
 };
 
 export default CircularLoader;

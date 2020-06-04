@@ -9,6 +9,8 @@ type OwnProps = {
     isGenre?: boolean; // Whether it is a genre card or movie/series card
     imgUrl?: string;
     routeProps?: RouteComponentProps;
+    width?: number;
+    height?: number;
 }
 
 type Props = OwnProps & RouteComponentProps
@@ -16,8 +18,8 @@ type Props = OwnProps & RouteComponentProps
 const useStyles = makeStyles((theme) => ({
     showsCard:{
         background: theme.palette.secondary.main,
-        width: 230,
-        height: 320,
+        width: (props: Props) => props.width ? props.width : 230,
+        height: (props: Props) => props.height ? props.height : 320,
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
