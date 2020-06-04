@@ -27,7 +27,6 @@ const useStyles = makeStyles((theme) => ({
 		display:'flex',
 		flexDirection:'column',
     minHeight: '100vh',
-    background: '#181a1b',
    },
    main: {
       minHeight: 550,

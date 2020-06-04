@@ -1,18 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { AppBar, Toolbar, makeStyles, fade, InputBase } from '@material-ui/core';
+import { AppBar, Toolbar, makeStyles, fade, InputBase, Badge } from '@material-ui/core';
 import { Search as SearchIcon  } from '@material-ui/icons';
+import { Bookmark as BookmarkIcon } from '@material-ui/icons';
+import { connect } from 'react-redux';
+import { User } from 'store/types';
+import { AppState } from 'store/reducers';
+
 
 type OwnProps = {
   placeholder: string;
   searchShows: (value: string) => void;
 }
 
-type Props = OwnProps;
+type Props = OwnProps & StoreStateProps;
 
 const useStyles = makeStyles((theme) => ({
   search:{
     position: 'relative',
-    borderRadius: theme.shape.borderRadius,
+    borderRadius: 3,
     backgroundColor: fade(theme.palette.common.white, 0.2),
     '&:hover': {
       backgroundColor: fade(theme.palette.common.white, 0.25),
@@ -27,10 +32,10 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingLeft: 7
+    paddingLeft: 10
   },
   searchInput: {
-    padding: '0px 4px 0px 40px',
+    padding: '2px 4px 2px 40px',
     width:300,
     color:'inherit',
     '& input': {
@@ -64,7 +69,7 @@ const SearchBar: React.FC<Props> = (props) => {
             >
                 <div className={search}>
                     <div className={searchIcon}>
-                        <SearchIcon />
+                        <SearchIcon fontSize="small" />
                     </div>
                     <InputBase
                       onChange={onChangeHandler}
@@ -74,9 +79,24 @@ const SearchBar: React.FC<Props> = (props) => {
                       inputProps={{ 'aria-label': 'search' }}
                     />
                 </div>
+                <Badge 
+                  badgeContent={props.user?.wishlist.length}
+                  color="secondary"
+                  style={{ marginLeft:'auto', marginRight: 10 }}
+                >
+                    <BookmarkIcon fontSize="small"/>
+                </Badge>
             </Toolbar>
         </AppBar>
     );
 };
 
-export default SearchBar;
+type StoreStateProps = {
+  user: User;
+}
+
+const mapStoreStateToProps = (state: AppState): StoreStateProps => ({
+  user: state.userAuth.user
+});
+
+export default connect<StoreStateProps, {}, OwnProps, AppState>(mapStoreStateToProps)(SearchBar);

@@ -4,11 +4,13 @@ import { Link, RouteComponentProps } from 'react-router-dom';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { AppState } from 'store/reducers';
-
-import { AppBar, Toolbar, Button, Typography, Container, makeStyles } from '@material-ui/core';
 import { User } from 'store/types';
 import { AppActions } from 'store/actions/types';
 import { storeAuthUser } from 'store/actions/userAuth';
+
+import { AppBar, Toolbar, Button, Typography, Container, makeStyles, Avatar, Menu, MenuItem, IconButton } from '@material-ui/core';
+import { MoreVert as MoreVertIcon } from '@material-ui/icons';
+
 
 type OwnProps = {};
 type Props = OwnProps & RouteComponentProps & StoreStateProps & StoreDispatchProps
@@ -27,6 +29,19 @@ const Navbar: React.FC<Props> = (props) => {
   const classes = useStyles();
 
   const [userAuth, setUserAuth] = useState(false);
+
+  // Menu
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  //--
 
   const logout = () => {
     firebase.auth().signOut().
@@ -64,12 +79,39 @@ const Navbar: React.FC<Props> = (props) => {
           </React.Fragment>
       );
     } else {
-      return  (<Button
-        size="small"
-        className={classes.login}
-        color="inherit"
-        onClick={logout}
-      >Log out</Button>);
+      return  (
+          <React.Fragment>
+              {/* Menu */}
+              <IconButton
+                aria-label="more"
+                aria-controls="long-menu"
+                aria-haspopup="true"
+                onClick={handleClick}
+              >
+                  <MoreVertIcon style={{ color: '#fff' }} />
+              </IconButton>
+              <Menu
+                id="long-menu"
+                anchorEl={anchorEl}
+                getContentAnchorEl={null}
+                anchorOrigin={{ vertical: "bottom", horizontal: -110 }}
+                keepMounted
+                open={open}
+                onClose={handleClose}
+              >
+                  <MenuItem
+                    onClick={handleClose}
+                  >
+                      My Account
+                  </MenuItem>
+                  <MenuItem
+                    onClick={logout}
+                  >
+                      Logout
+                  </MenuItem>
+              </Menu>
+          </React.Fragment>
+      );
     }
   }; 
 

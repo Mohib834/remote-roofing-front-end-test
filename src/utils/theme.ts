@@ -28,6 +28,20 @@ const theme = createMuiTheme({
 				textTransform: 'initial'
 			}
 		},
+		MuiBadge: {
+			badge: {
+				boxShadow: '0 5px 5px rgba(0,0,0,.1)'
+			}
+		},
+		MuiMenu: {
+			paper: {
+				background: '#2b2b2b',
+				color: '#fff',
+			},
+			list: {
+				width: 160,
+			}
+		}
 	}
 });
 
