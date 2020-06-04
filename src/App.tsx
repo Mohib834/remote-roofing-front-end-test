@@ -7,6 +7,8 @@ import { AppState } from 'store/reducers';
 import { ThunkDispatch } from 'redux-thunk';
 import { AppActions } from 'store/actions/types';
 import { startFetchUserData } from './store/actions/userAuth';
+import { User } from 'store/types';
+import { ProtectedRoute } from 'components/partials/ProtectedRoute';
 // Components
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -16,8 +18,7 @@ import Shows from './containers/shows';
 import Show from './containers/show';
 import Register from './containers/register';
 import Login from './containers/login';
-import { ProtectedRoute } from 'components/partials/ProtectedRoute';
-import { User } from 'store/types';
+import Account from './containers/account';
 
 type OwnProps = {}
 type Props = OwnProps & StoreDispatchProps & StoreStateProps & RouteComponentProps;
@@ -55,12 +56,13 @@ const App: React.FC<Props> = (props) => {
         <div className={app}>
             <Switch>
                 <ProtectedRoute 
+                  path="/register"
                   protectAuthPages={true}
-                  component={Register}
                   redirect="/"
                   user={props.user}
-
-                />
+                >
+                    <Register />
+                </ProtectedRoute>
             </Switch>
         </div>
     );
@@ -71,11 +73,13 @@ const App: React.FC<Props> = (props) => {
         <div className={app}>
             <Switch>
                 <ProtectedRoute 
+                  path="/login"
                   protectAuthPages={true}
-                  component={Login}
                   redirect="/"
                   user={props.user}
-                />
+                >
+                    <Login />
+                </ProtectedRoute>
             </Switch>
         </div>
     );
@@ -104,6 +108,17 @@ const App: React.FC<Props> = (props) => {
                   path="/shows"
                   render={() => <Shows />}
                 />
+                <Route
+                  path="/account"
+                  render={() => <Account />}
+                />
+                {/* <ProtectedRoute 
+                  path="/account"
+                  redirect="/"
+                  user={props.user}
+                >
+                    <Account />
+                </ProtectedRoute> */}
                 <Route 
                   path="/"
                   render={() => <Home />}

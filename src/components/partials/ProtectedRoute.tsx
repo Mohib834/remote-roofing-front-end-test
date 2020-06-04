@@ -1,24 +1,25 @@
 import React from 'react';
-import { Redirect } from 'react-router';
+import { Redirect, RouteProps, Route } from 'react-router';
 import { User } from 'store/types';
 
 type ProtectedRouteProps = {
-    component: React.FC;
     redirect: string;
-    protectAuthPages: boolean; 
+    protectAuthPages?: boolean; 
     user: User;
 }
 
-type Props = ProtectedRouteProps
+type Props = ProtectedRouteProps & RouteProps
 
 export const ProtectedRoute: React.FC<Props> = (props): any => {
-  const Component = props.component;
-  
   // If user tries to go to login / register page when authenticated
   if(props.protectAuthPages){
-    return props.user ? <Redirect to={props.redirect} /> : <Component {...props} />; 
+    return props.user ? <Redirect to={props.redirect} /> :  <Route {...props}
+      component={props.component}
+    />; 
   } else{ // If user tries to go to protected routes without authentication
-    return props.user ? <Component {...props} /> : <Redirect to={props.redirect} />;  
+    return props.user ? <Route {...props}
+      component={props.component}
+    />  : <Redirect to={props.redirect} />;  
   }
 };
 

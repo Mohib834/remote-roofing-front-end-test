@@ -41,6 +41,13 @@ const theme = createMuiTheme({
 			list: {
 				width: 160,
 			}
+		},
+		MuiTab: {
+			wrapper: {
+				display:'flex',
+				flexDirection: 'row',
+				justifyContent: 'flex-start'
+			},
 		}
 	}
 });

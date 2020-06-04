@@ -100,6 +100,8 @@ const Navbar: React.FC<Props> = (props) => {
                 onClose={handleClose}
               >
                   <MenuItem
+                    component={Link}
+                    to="/account"
                     onClick={handleClose}
                   >
                       My Account
