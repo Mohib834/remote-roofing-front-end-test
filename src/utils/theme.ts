@@ -20,6 +20,12 @@ const theme = createMuiTheme({
 		},
 		secondary: {
 			main: '#2b2b2b'
+		},
+		success: {
+			main: 'rgb(50, 50, 50)'
+		},
+		error: {
+			main: 'rgb(202, 11, 0)'
 		}
 	},
 	overrides: {
@@ -48,7 +54,7 @@ const theme = createMuiTheme({
 				flexDirection: 'row',
 				justifyContent: 'flex-start'
 			},
-		}
+		},
 	}
 });
 

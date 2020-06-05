@@ -13,23 +13,32 @@ import Tilt from 'react-tilt';
 import { BookmarkBorder as BookmarkBorderIcon, Bookmark as BookmarkIcon } from '@material-ui/icons';
 import { Container, Grid, makeStyles, Typography, Box, CircularProgress } from '@material-ui/core';
 import CircularLoader from 'components/partials/CircularLoader';
-import bgImg from '../assets/show.png';
+import noShowImg from '../assets/show.png';
 
 type OwnProps = {};
 type Props = OwnProps & StoreDispatchToProps & StoreStateToProps & RouteComponentProps;
 
 const useStyles = makeStyles(theme => ({
     showContainer: {
-     height: '100vh',
+     display: 'flex',
+     alignItems:'center',
+     minHeight: '100vh',
      backgroundSize: 'cover !important',
      backgroundRepeat: 'no-repeat !important',
+     backgroundPosition: 'top !important',
+     [theme.breakpoints.down('sm')]: {
+        padding: '80px 0',
+     }
     },
     showContent: {
         color: '#fff',
         display:'flex',
         flexDirection: 'column',
         justifyContent:'space-around',
-        height: '60%'
+        height: '60%',
+        [theme.breakpoints.down('md')]: {
+            marginBottom: 50,
+        }
     },
     showDetail: {
         fontWeight: 600,
@@ -96,7 +105,6 @@ const Show: React.FC<Props> = (props) => {
         // Fetch the show data
         props.fetchAShow(sName, category as 'movie' | 'tv')
         .then(response => {
-            console.log(response);
             setShowData(response);
             setIsLoading(false);
         });
@@ -182,8 +190,9 @@ const Show: React.FC<Props> = (props) => {
                   style={{ height: '100%' }}   
                 >
                     <Grid item
-                      xs={6}
-                      style={{ height: '100%', display:'flex',alignItems:'center' }}
+                      xs={12}
+                      md={6}
+                      style={{ minHeight: '100%', display:'flex', alignItems: 'center' }}
                     >
                         <Box className={showContent}>
                             <Box style={{ marginBottom: 30 }}>
@@ -215,7 +224,8 @@ const Show: React.FC<Props> = (props) => {
                         </Box>
                     </Grid>
                     <Grid item
-                      xs={6}
+                      xs={12}
+                      md={6}
                       style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent:'center' }}
 
                     >
@@ -226,7 +236,7 @@ const Show: React.FC<Props> = (props) => {
                                       alt=""
                                     />
                                 ) : (
-                                    <img src={bgImg}
+                                    <img src={noShowImg}
                                       style={{ maxWidth: 400 }}
                                       alt=""
                                     />

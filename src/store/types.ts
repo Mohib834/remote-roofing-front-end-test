@@ -8,6 +8,8 @@ export type ShowsStateTypes = {
 // User Auth state
 export type User = {
     uid: string;
+    userEmail: string;
+    userImg?: string;
     wishlist: {
         tv: Array<string>;
         movie: Array<string>;

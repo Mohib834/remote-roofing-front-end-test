@@ -7,18 +7,29 @@ import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { v4 as uuid } from 'uuid';
 import { AppActions } from '../store/actions/types';
 
-import { Container, Grid } from '@material-ui/core';
+import { Container, Grid, makeStyles } from '@material-ui/core';
 
 import TopBar from '../components/partials/TopBar';
 import ShowsCard from '../components/partials/ShowsCard';
 import SkeletonLoader from '../components/partials/SkeletonLoader';
 import SearchBar from '../components/partials/SearchBar';
 
+import emptyImg from '../assets/svgs/empty.svg';
+
 type OwnProps = {};
 
 type Props = OwnProps & StoreDispatchProps & RouteComponentProps
 
+const useStyles = makeStyles(theme => ({
+    showsGrid: {
+        [theme.breakpoints.down("md")]: {
+            justifyContent: "center"
+        }
+    }
+}));
+
 const Shows: React.FC<Props> = (props) => {
+    const { showsGrid } = useStyles();
     const [shows, setShows] = useState<Array<{[key: string]: any}> | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     // storing all movies in a single state to access them in the search functionality
@@ -81,13 +92,13 @@ const Shows: React.FC<Props> = (props) => {
                 />
                 <Grid 
                   container
-                  spacing={4}
+                  spacing={2}
+                  className={showsGrid}
                 >
-                    {shows?.map(s => (
+                    {shows?.length !== 0 ? shows?.map(s => (
                         <Grid item
-                          xs={2}
                           key={uuid()}
-                          style={{ marginRight: 40, marginBottom: 40 }}
+                          style={{ marginBottom: 40, marginRight: 3.6 }}
                         >
                             <ShowsCard    
                               cardTitle={s.title}
@@ -95,7 +106,16 @@ const Shows: React.FC<Props> = (props) => {
                               imgUrl={s.images["Poster Art"].url}
                             />
                         </Grid>
-                ))}
+                    )) : (
+                        <Grid item
+                          xs={12}
+                          style={{ margin: '40px 0', display: 'flex', justifyContent: 'center' }}
+                        >
+                            <img src={emptyImg}
+                              style={{ maxWidth: 350 }}
+                            />
+                        </Grid>
+                    )}
                 </Grid>
             </Container>
         </section>

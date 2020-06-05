@@ -7,7 +7,7 @@ import { Skeleton } from '@material-ui/lab';
 const useStyles = makeStyles(theme => ({
   skeleton: {
     background: theme.palette.secondary.main,
-  }
+  },
 }));
 
 const Loader: React.FC = () => {
@@ -19,12 +19,12 @@ const Loader: React.FC = () => {
 
     return (
         <Container>
-            <Grid container
-              spacing={4}
+            <Grid
+              container
             >
                 <Grid item
                   xs={12}
-                  style={{ marginBottom: 0, marginTop: -15 }}
+                  style={{ marginBottom: 20, marginTop:-18 }}
                 >
                     <Typography variant="h2">
                         <Skeleton 
@@ -32,20 +32,24 @@ const Loader: React.FC = () => {
                         />
                     </Typography>
                 </Grid>
-                { skeletons.map(() => (
-                    <Grid item
-                      xs={2}
-                      key={uuid()}
-                      style={{ marginRight: 40, marginBottom: 40, marginTop:-30, }}
-                    > 
-                        <Skeleton
-                          className={skeleton}
-                          variant="rect"
-                          width={230}
-                          height={320}
-                        />
-                    </Grid>
+                <Grid container
+                  spacing={2}
+                  justify="center"
+                >
+                    { skeletons.map(() => (
+                        <Grid item
+                          key={uuid()}
+                          style={{ marginRight: 3.6, marginBottom: 40, marginTop: -15 }}
+                        > 
+                            <Skeleton
+                              className={skeleton}
+                              variant="rect"
+                              width={230}
+                              height={320}
+                            />
+                        </Grid>
                   ))}
+                </Grid>
             </Grid>
         </Container>
     );

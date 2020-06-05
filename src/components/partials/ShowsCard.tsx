@@ -29,6 +29,9 @@ const useStyles = makeStyles((theme) => ({
             "& $showsGenre":{
                 top:'50%',
                 opacity:1,
+            },
+            "& $showsImg": {
+                filter: 'brightness(.9)'
             }
         }
     },
@@ -117,7 +120,7 @@ const ShowsCard: React.FC<Props> = (props) => {
                 </Card>
             </ButtonBase>
             <Typography variant="body2"
-              style={{ fontWeight: 600, marginTop:5, color:'#fff' }}
+              style={{ fontWeight: 600, marginTop:5, color:'#fff', maxWidth: props.width ? props.width : 230 }}
             >
                 { props.cardTitle }
             </Typography>

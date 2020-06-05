@@ -101,7 +101,7 @@ export const startToggleWishlist = (sid: string, category: "tv" | "movie",  togg
                 }
     
                 // Get the current user uid and wishlist from store
-                const { uid, wishlist, name } = getState().userAuth.user!;
+                const { wishlist, uid } = getState().userAuth.user!;
     
                 const newWishlist = {} as { movie: Array<string>; tv: Array<string> };
 
@@ -130,8 +130,7 @@ export const startToggleWishlist = (sid: string, category: "tv" | "movie",  togg
             
                 // Update the store with the new wishlist
                 dispatch(storeAuthUser({
-                    uid,
-                    name,
+                    ...user,
                     wishlist: newWishlist,
                 }));
 
@@ -174,7 +173,6 @@ export const startFetchWishlistShows = () => {
             try{
                 const userWishlist = getState().userAuth.user?.wishlist;
                 const promises: Array<Promise<{[key: string]: any}>> = [];
-
                 
 
                 // Fetching all the movies using movie id one by one and storing them in the promises Array

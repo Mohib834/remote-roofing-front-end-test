@@ -20,7 +20,7 @@ const useStyles = makeStyles(theme => ({
     authCard: {
         background:theme.palette.primary.main,
         color: '#fff',
-        width: 400,
+        maxWidth: 400,
         minHeight: 410,
         boxSizing: 'border-box',
         padding: '15px 20px',

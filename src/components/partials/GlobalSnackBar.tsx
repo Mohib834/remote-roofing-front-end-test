@@ -27,7 +27,6 @@ const GlobalSnackBar: React.FC<Props> = (props) => {
 
   return (
       <Snackbar
-        color="primary"
         anchorOrigin={{
         vertical: "top",
         horizontal: "right",
@@ -36,7 +35,12 @@ const GlobalSnackBar: React.FC<Props> = (props) => {
         autoHideDuration={3000}
         onClose={closeHandler}
       >
-          <Alert severity={props.snackbar.color}>
+          <Alert variant="filled"
+            elevation={5}
+            style={{ borderRadius: 4 }}
+
+            severity={props.snackbar.color}
+          >
               {props.snackbar.message}
           </Alert>
       </Snackbar>

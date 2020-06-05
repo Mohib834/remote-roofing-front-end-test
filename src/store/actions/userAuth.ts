@@ -6,6 +6,7 @@ import { User } from "store/types";
 
 const auth = firebase.auth();
 const db = firebase.firestore();
+const storage = firebase.storage();
 
 // dispatch
 export const storeAuthUser = (user: User): AppActions => ({
@@ -40,6 +41,7 @@ export const startCreateUserAccount = ({ email, password, username }: {
 
                 const user: User = {
                     uid: res.user.uid,
+                    userEmail: email,
                     wishlist: {
                         movie: [],
                         tv: [],
@@ -153,3 +155,53 @@ export const startFetchUserData = (uid: string) => {
         });
     };
 };
+
+// Upload the user image
+export const startUploadUserImage = (imgFile: File) => {
+    return (dispatch: Dispatch<AppActions>, getState: () => AppState): Promise<void> => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const uid = getState().userAuth.user?.uid;
+    
+                // Storing image in firebase storage
+                // img pathway uid/user-img/img
+                const storageRef = storage.ref(uid); // creating a user folder with uid
+                const fileRef = storageRef.child('/user-img/' + imgFile); // creating a user-img/imgfile folder
+                const uploadTask = await fileRef.put(imgFile); // putting the img file in the respective folder
+
+                const downloadUrl = await uploadTask.ref.getDownloadURL();
+
+                // update the firestore with the user img url
+                await db.collection('users').doc(uid).set({
+                    userImg: downloadUrl
+                },{ merge: true });
+
+                // Update the redux store with the user img url
+                const user = getState().userAuth.user;
+
+                const updatedUser = { ...user, userImg: downloadUrl } as User;
+
+                dispatch(storeAuthUser(updatedUser));
+                
+                // Show snackbar for successfull upload
+                dispatch(showSnackbar({
+                    open: true,
+                    message: 'Image uploaded successfully ',
+                    color: 'success',
+                }));
+
+                resolve();
+
+            }catch(err) {
+                dispatch(showSnackbar({
+                    open: true,
+                    message: 'Something went wrong',
+                    color: 'error',
+                }));
+                console.log(err);
+                reject(err);
+            }
+        });
+    };
+};
+

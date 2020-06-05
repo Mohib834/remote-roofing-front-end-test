@@ -14,9 +14,12 @@ type Props = OwnProps & StoreDispatchProps;
 const useStyles = makeStyles((theme) => ({
     login: {
         background:theme.palette.secondary.main,
-        height: '100vh',
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
     },
     loginContainer: {
+        margin: '40px auto',
         height: '100%',
         display:'flex',
         justifyContent:'center',

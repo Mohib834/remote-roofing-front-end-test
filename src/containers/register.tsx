@@ -20,6 +20,7 @@ const useStyles = makeStyles((theme) => ({
     registerContainer: {
         height: '100%',
         display:'flex',
+        margin: '40px auto',
         justifyContent:'center',
         alignItems:'center'
     },

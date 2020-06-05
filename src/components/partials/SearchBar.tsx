@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
   },
   searchInput: {
     padding: '2px 4px 2px 40px',
-    width:300,
+    maxWidth:300,
     color:'inherit',
     '& input': {
       paddingTop: 5,
