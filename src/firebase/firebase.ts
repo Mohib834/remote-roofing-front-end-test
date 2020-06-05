@@ -1,8 +1,7 @@
 import firebase from 'firebase';
-import { firebaseApiKey } from './env';
 
 const firebaseConfig = {
-  apiKey: firebaseApiKey,
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
   authDomain: "remote-roofing-moviebox.firebaseapp.com",
   databaseURL: "https://remote-roofing-moviebox.firebaseio.com",
   projectId: "remote-roofing-moviebox",

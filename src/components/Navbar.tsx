@@ -8,7 +8,7 @@ import { User } from 'store/types';
 import { AppActions } from 'store/actions/types';
 import { storeAuthUser } from 'store/actions/userAuth';
 
-import { AppBar, Toolbar, Button, Typography, Container, makeStyles, Avatar, Menu, MenuItem, IconButton } from '@material-ui/core';
+import { AppBar, Toolbar, Button, Typography, Container, makeStyles, Menu, MenuItem, IconButton } from '@material-ui/core';
 import { MoreVert as MoreVertIcon } from '@material-ui/icons';
 
 
@@ -59,8 +59,8 @@ const Navbar: React.FC<Props> = (props) => {
   //--
 
   const logout = () => {
-    firebase.auth().signOut().
-    then(() => {
+    firebase.auth().signOut()
+    .then(() => {
       props.storeAuthUser(null);
       // Redirect to login page
       props.history.push('/login');

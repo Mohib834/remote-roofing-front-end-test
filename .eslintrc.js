@@ -21,13 +21,14 @@ module.exports = {
       "react/jsx-indent-props": [2, 2],
       "react/jsx-max-props-per-line": [1, { "maximum": 1 }],
       "react/jsx-closing-bracket-location": [1, {"location": "line-aligned"}],
-      "object-curly-spacing": [2, "always"],
-      "react/jsx-curly-spacing": [1],
-      "semi": [2, "always"],
       "react/prop-types":0,
       "@typescript-eslint/no-use-before-define": ["off"],
       "@typescript-eslint/ban-ts-ignore": "off",
       "@typescript-eslint/explicit-function-return-type": "off",
       "@typescript-eslint/no-explicit-any": "off",
+      "object-curly-spacing": [2, "always"],
+      "react/jsx-curly-spacing": [1],
+      "semi": [2, "always"],
+      "no-console": ["warn"]
     }
 };

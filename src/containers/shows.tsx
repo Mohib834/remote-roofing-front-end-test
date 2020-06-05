@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { AppState } from '../store/reducers';
 import { ThunkDispatch } from 'redux-thunk';
@@ -126,7 +126,7 @@ type StoreDispatchProps = {
     fetchShows: (category: string) => Promise<Array<{[key: string]: any}>>;
 }
 
-const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, AppActions>, ownProps: OwnProps): StoreDispatchProps => ({
+const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, AppActions>): StoreDispatchProps => ({
     fetchShows: (category: string) => dispatch(actionCreator.startFetchShowsData(category))
 });
 

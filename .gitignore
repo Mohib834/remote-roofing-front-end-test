@@ -24,3 +24,6 @@ yarn-error.log*
 
 # history
 .history
+
+# firebase cache
+.firebase

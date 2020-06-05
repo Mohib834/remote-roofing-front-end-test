@@ -9,7 +9,7 @@ import InstagramIcon from '@material-ui/icons/Instagram';
 type OwnProps = {}
 type Props = OwnProps;
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
 	footer: {
 		background: theme.palette.secondary.main,
 		marginTop: 'auto',
@@ -101,9 +101,8 @@ const links =  [
 	{ link: '/', text: 'Manage Account' },
 ];
 
-const Footer: React.FC<Props> = (props) => {
+const Footer: React.FC<Props> = () => {
   const { footer, link, linksGrid, linksContainer, socialContainer, socialGrid, copyrightText, copyrightTextBottom, downloadContainer } = useStyles();
-  const theme = useTheme<Theme>();
 
 	return (
     <footer className={footer}>

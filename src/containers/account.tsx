@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, MutableRefObject } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import firebase from 'firebase';
 import { connect } from 'react-redux';
 import { storeAuthUser, startUploadUserImage, startUserResetPassword, startDeleteAccount } from 'store/actions/userAuth';
@@ -139,7 +139,6 @@ const Account: React.FC<Props> = (props) => {
     const [isLoading, setIsLoading] = useState(true);
     const [isUploading, setIsUploading] = useState(false);
     const [sendingResetLink, setSendingResetLink] = useState(false);
-    const [confirmDelete, setConfirmDelete] = useState(false);
     const [deletingAccount, setDeletingAccount] = useState(false);
     const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
@@ -151,7 +150,6 @@ const Account: React.FC<Props> = (props) => {
         .then(res => {
             setWishlistShows(res);
             setIsLoading(false);
-            console.log(res);
         });
     }, [props.user?.wishlist]);
 
@@ -159,8 +157,8 @@ const Account: React.FC<Props> = (props) => {
     const onTabChangeHandler = (event: React.ChangeEvent<{}>, idx: any) => {
         // If logout tab is clicked
         if(idx === 2){
-            firebase.auth().signOut().
-            then(() => {
+            firebase.auth().signOut()
+            .then(() => {
               props.storeAuthUser(null);
               // Redirect to login page
               props.history.push('/login');
@@ -258,6 +256,7 @@ const Account: React.FC<Props> = (props) => {
                                 >
                                     
                                     <img src={wishlistImg}
+                                      alt="show image"
                                       style={{ maxWidth: 350 }}
                                     />
                                     <Typography align="center">Bookmark a show to have them on your wishlist.
@@ -293,6 +292,7 @@ const Account: React.FC<Props> = (props) => {
                                     />
                                 ) : (
                                     <img 
+                                      alt="user img"
                                       style={{ width: '100%', height: '100%', objectFit:'cover', objectPosition: 'top' }}
                                       src={props.user?.userImg ? props.user.userImg : noImg}
                                     ></img>

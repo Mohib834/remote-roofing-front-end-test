@@ -98,6 +98,7 @@ const ShowsCard: React.FC<Props> = (props) => {
                         { props.isGenre ? (
                             <React.Fragment>
                                 <img className={categoryImg}
+                                  alt="film icon"
                                   src={require('assets/svgs/film.svg')}
                                 />
                                 <Typography className={showsGenre}>
@@ -111,6 +112,7 @@ const ShowsCard: React.FC<Props> = (props) => {
                                 />
                                 <img className={showsImg}
                                   src={props.imgUrl}
+                                  alt="show poster"
                                   style={{ display: isImgLoading ? 'none' : 'block' }}
                                   onLoad={onImgLoadHandler}
                                 />
