@@ -140,7 +140,7 @@ export const startLoginUser = ({ email, password }: {email: string; password: st
 };
 // Fetching user data and storing in redux
 export const startFetchUserData = (uid: string) => {
-    return (dispatch: Dispatch<AppActions>, getState: () => AppState): Promise<undefined> => {
+    return (dispatch: Dispatch<AppActions>, getState: () => AppState): Promise<void> => {
         return new Promise((resolve, reject) => {
             // requestin the user data
             db.collection('users').doc(uid).get().then(snapshot => {
@@ -205,3 +205,59 @@ export const startUploadUserImage = (imgFile: File) => {
     };
 };
 
+// Reset password
+export const startUserResetPassword = () => {
+    return (dispatch: Dispatch<AppActions>, getState: () => AppState): Promise<void> => {
+       return new Promise(async (resolve, reject) => {
+           const email = getState().userAuth.user?.userEmail as string;
+           try{
+               // Sending password reset link
+               await auth.sendPasswordResetEmail(email);
+               
+               dispatch(showSnackbar({
+                   open: true,
+                   message: 'A password reset link has been sent to your account',
+                   color: 'success',
+               }));
+               // Signing out the user after link sent
+               await auth.signOut();
+
+               resolve();
+           } catch(err) {
+               reject(err);
+               dispatch(showSnackbar({
+                   open: true,
+                   message: 'Something went wrong',
+                   color: 'error'
+               }));
+           }
+
+       });
+    };
+};
+// Delete account
+export const startDeleteAccount = () => {
+    return (dispatch: Dispatch<AppActions>, getState: () => AppState): Promise<void> => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const user = auth.currentUser;
+                await user?.delete();
+                
+                dispatch(showSnackbar({
+                    open: true,
+                    message: 'Your account has been deleted',
+                    color: 'success',
+                }));
+
+                resolve();
+            } catch(err){
+                reject(err);
+                dispatch(showSnackbar({
+                   open: true,
+                   message: 'Something went wrong',
+                   color: 'error'
+                }));
+            }
+        });
+    };
+};

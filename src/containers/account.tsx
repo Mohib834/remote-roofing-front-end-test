@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, MutableRefObject } from 'react';
 import firebase from 'firebase';
 import { connect } from 'react-redux';
-import { storeAuthUser, startUploadUserImage } from 'store/actions/userAuth';
+import { storeAuthUser, startUploadUserImage, startUserResetPassword, startDeleteAccount } from 'store/actions/userAuth';
 import { startFetchWishlistShows } from 'store/actions/shows';
 import { User } from 'store/types';
 import { AppActions } from 'store/actions/types';
@@ -12,8 +12,8 @@ import { v4 as uuid } from 'uuid';
 
 import TopBar from 'components/partials/TopBar';
 
-import { Container, Grid, makeStyles, Typography, Tabs, Tab, Paper, Box, Button, CircularProgress } from '@material-ui/core';
-import { Bookmark as BookmarkIcon, Person as PersonIcon, ExitToApp as ExitToAppIcon, PhotoCamera as PhotoCameraIcon, VpnKey as VpnKeyIcon } from '@material-ui/icons';
+import { Container, Grid, makeStyles, Typography, Tabs, Tab, Paper, Box, Button, CircularProgress, Dialog, DialogContent, DialogActions } from '@material-ui/core';
+import { Bookmark as BookmarkIcon, Person as PersonIcon, ExitToApp as ExitToAppIcon, PhotoCamera as PhotoCameraIcon, VpnKey as VpnKeyIcon, DeleteForever as DeleteForeverIcon } from '@material-ui/icons';
 import ShowsCard from 'components/partials/ShowsCard';
 import CircularLoader from 'components/partials/CircularLoader';
 
@@ -101,6 +101,11 @@ const useStyles = makeStyles(theme => ({
         display:'flex',
         flexDirection: 'column',
         justifyContent: 'center',
+        [theme.breakpoints.down('sm')]: {
+            padding: 0,
+            borderLeft: 0,
+            marginTop: 30
+        }
     },
     imgBox: {
         marginBottom: 20, 
@@ -110,16 +115,33 @@ const useStyles = makeStyles(theme => ({
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-    }
+    },
+    deleteBtn: {
+        background: theme.palette.error.main,
+        color: '#fff',
+        '&:hover': {
+            background: theme.palette.error.dark
+        }
+    },
+    dialogBox: {
+        '& .MuiDialog-paper': {
+            background: theme.palette.secondary.main,
+            color: '#fff',
+        },
+    },
 }));
 
 const Account: React.FC<Props> = (props) => {
-    const { account, accountCard, tabIcon, tabContent, tabContentTitle, wishlistShow, wishlistGrid, changeFnGrid, imgBox } = useStyles();
+    const { account, accountCard, tabIcon, tabContent, tabContentTitle, wishlistShow, wishlistGrid, changeFnGrid, imgBox, deleteBtn, dialogBox } = useStyles();
     
     const [tabIdx, setTabIdx] = useState(0);
     const [wishlistShows, setWishlistShows] = useState<Array<{[key: string]: any}> | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [isUploading, setIsUploading] = useState(false);
+    const [sendingResetLink, setSendingResetLink] = useState(false);
+    const [confirmDelete, setConfirmDelete] = useState(false);
+    const [deletingAccount, setDeletingAccount] = useState(false);
+    const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
     const inputFileElRef = useRef<HTMLInputElement>(null);
 
@@ -156,13 +178,42 @@ const Account: React.FC<Props> = (props) => {
 
        setIsUploading(true);
 
-       props.uploadUserImg(img).then(() => {
-        setIsUploading(false);
-       })
-       .catch(() => {
-        setIsUploading(false);
-       });
+       props.uploadUserImg(img)
+       .then(() => setIsUploading(false))
+       .catch(() => setIsUploading(false));
     };
+
+    // Reset password
+    const resetPasswordHandler = () => {
+        setSendingResetLink(true);
+        props.resetPassword()
+        .then(() => setSendingResetLink(false))
+        .catch(() => setSendingResetLink(false));
+    };
+
+    const closeDeleteDialogHandler = () => {
+        setOpenDeleteDialog(false);
+    };
+
+    const openDeleteDialogHandler = () => {
+        setOpenDeleteDialog(true);
+    };
+
+    const deleteAccountHandler = () => {
+        setOpenDeleteDialog(false);
+        setDeletingAccount(true);
+
+        props.deleteAccount()
+        .then(() => {
+            setDeletingAccount(false);
+            // Remove the storedUser from redux
+            props.storeAuthUser(null);
+            // redirect to register page
+            props.history.push('/register');
+        })
+        .catch(() => setDeletingAccount(false));
+    };
+
 
     const wishlistItemsLength =  () => {
         if(props.user){
@@ -255,16 +306,35 @@ const Account: React.FC<Props> = (props) => {
                             <Typography variant="body1">
                                 <strong style={{ fontWeight: 600 }}>Email</strong>: {props.user?.userEmail}
                             </Typography>
-                            <Typography variant="body1">
+                            <Typography variant="body1"
+                              style={{ marginBottom: 30 }}
+                            >
                                 <strong style={{ fontWeight: 600 }}>Wishlist items</strong>: {wishlistItemsLength()}
                             </Typography>
+                            <div>
+                                <Button
+                                  className={deleteBtn}
+                                  variant="contained"
+                                  color="primary"
+                                  size="small"
+                                  component="span"
+                                  onClick={openDeleteDialogHandler}
+                                  startIcon={<DeleteForeverIcon />}
+                                >
+                                    Delete account
+                                </Button>
+                                {deletingAccount ? <CircularProgress size={12}
+                                  style={{ color:'#fff', marginLeft:10 }}
+                                /> : null }
+                            </div>
                         </Grid>
                         <Grid item
                           xs={12}
                           sm={6}
                           className={changeFnGrid}
                         >
-                            <Box style={{ marginBottom: 40 }}>
+                            <Box style={{ display: 'flex', flexDirection: 'column', marginBottom: 40 }}>
+                            
                                 <span style={{ display: 'inline-block', marginBottom: 15 }}>Would you like to upload a profile photo ?</span>
                                 <input
                                   ref={inputFileElRef}
@@ -285,21 +355,25 @@ const Account: React.FC<Props> = (props) => {
                                     >
                                         Upload
                                     </Button>
-                                    {/* {isUploading ? <CircularProgress size={10}
-                                      style={{ color:'#fff', marginLeft:10 }}
-                                    /> : null } */}
                                 </label>
                             </Box>
-                            <Box>
+                            <Box style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
                                 <span style={{ display: 'inline-block', marginBottom: 15 }}>Do you want to change your password ?</span>
-                                <Button variant="contained"
-                                  color="primary"
-                                  component="span"
-                                  size="small"
-                                  startIcon={<VpnKeyIcon />}
-                                >
-                                    Change password
-                                </Button>
+                                <div>
+                                    <Button 
+                                      variant="contained"
+                                      color="primary"
+                                      component="span"
+                                      size="small"
+                                      onClick={resetPasswordHandler}
+                                      startIcon={<VpnKeyIcon />}
+                                    >
+                                        Change password
+                                    </Button>
+                                    {sendingResetLink ? <CircularProgress size={12}
+                                      style={{ color:'#fff', marginLeft:10 }}
+                                    /> : null }
+                                </div>
                             </Box>
                         </Grid>
                     </Grid>
@@ -308,8 +382,35 @@ const Account: React.FC<Props> = (props) => {
         }
     };
 
+
+
     return (
         <section className={account}>
+            {/* Dialog box */}
+            <Dialog
+              className={dialogBox}
+              open={openDeleteDialog}
+              onClose={closeDeleteDialogHandler}
+            >
+                <DialogContent>
+                    Are you sure that you want to delete your account ? 
+                </DialogContent>
+                <DialogActions>
+                    <Button size="small"
+                      style={{ color:'#fff' }}
+                      onClick={closeDeleteDialogHandler}
+                    >
+                        No
+                    </Button>
+                    <Button
+                      className={deleteBtn}
+                      size="small"
+                      onClick={deleteAccountHandler}
+                    >
+                        Yes 
+                    </Button>
+                </DialogActions>
+            </Dialog>
             <TopBar text="Account" />
             <Container>
                 <Grid container
@@ -374,6 +475,8 @@ type StoreDispatchProps = {
     storeAuthUser: (user: User) => void;
     fetchWishlistShows: () => Promise<Array<{[key: string]: any}>>;
     uploadUserImg: (imgFile: File) => Promise<void>;
+    resetPassword: () => Promise<void>;
+    deleteAccount: () => Promise<void>;
 }
 
 const mapStateToProps = (state: AppState): StoreStateProps => ({
@@ -383,7 +486,9 @@ const mapStateToProps = (state: AppState): StoreStateProps => ({
 const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, AppActions>): StoreDispatchProps => ({
     storeAuthUser: (user) => dispatch(storeAuthUser(user)),
     fetchWishlistShows: () => dispatch(startFetchWishlistShows()),
-    uploadUserImg: (imgFile) => dispatch(startUploadUserImage(imgFile))
+    uploadUserImg: (imgFile) => dispatch(startUploadUserImage(imgFile)),
+    resetPassword: () => dispatch(startUserResetPassword()),
+    deleteAccount: () => dispatch(startDeleteAccount())
 });
 
 

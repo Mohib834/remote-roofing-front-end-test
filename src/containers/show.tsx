@@ -4,7 +4,7 @@ import { AppState } from 'store/reducers';
 import { ThunkDispatch } from 'redux-thunk';
 import { startFetchAShow, startToggleWishlist } from 'store/actions/shows';
 import { AppActions } from 'store/actions/types';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
+import { RouteComponentProps, withRouter, Link } from 'react-router-dom';
 import { dateParser } from '../utils/helperFunctions';
 import { User } from 'store/types';
 
@@ -61,6 +61,26 @@ const useStyles = makeStyles(theme => ({
         '&:hover::after': {
             opacity: 1,
         }
+    },
+    backBtn: {
+        cursor:'pointer',
+        position:'relative',
+        display:'inline-block',
+        top: -60,
+        '&::after': {
+            content: '""',
+            position:'absolute',
+            width: '100%',
+            height: '100%',
+            left: 0,
+            opacity:0,
+            paddingBottom: 3,
+            transition: 'all .2s',
+            borderBottom: '1px solid',
+        },
+        '&:hover::after': {
+            opacity: 1,
+        }
     }
  }));
  
@@ -72,7 +92,7 @@ const Show: React.FC<Props> = (props) => {
     const [togglingWishlist, setTogglingWishlist] = useState<boolean>(false);
     const [itemAdded, setItemAdded] = useState<boolean>(false);
 
-    const { showContainer, showContent, bookmark } = useStyles();
+    const { showContainer, showContent, bookmark, backBtn } = useStyles();
 
     const imgBaseUrl = 'http://image.tmdb.org/t/p/w1280';
 
@@ -195,6 +215,12 @@ const Show: React.FC<Props> = (props) => {
                       style={{ minHeight: '100%', display:'flex', alignItems: 'center' }}
                     >
                         <Box className={showContent}>
+                            <Box>
+                                <Typography variant="body2"
+                                  className={backBtn}
+                                  onClick={props.history.goBack}
+                                >&larr; Back</Typography>
+                            </Box>
                             <Box style={{ marginBottom: 30 }}>
                                 <Typography variant="body2">{categoryRef === 'movie' ? (<React.Fragment>{dateParser(showData?.release_date)}</React.Fragment>) :
                                 (<React.Fragment>{dateParser(showData?.first_air_date)}</React.Fragment>)}
@@ -226,7 +252,7 @@ const Show: React.FC<Props> = (props) => {
                     <Grid item
                       xs={12}
                       md={6}
-                      style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent:'center' }}
+                      style={{ minHeight: '100%', display: 'flex', alignItems: 'center', justifyContent:'center' }}
 
                     >
                         <Box>

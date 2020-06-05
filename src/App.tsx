@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Switch, Route, withRouter, RouteComponentProps, Redirect } from 'react-router';
 import { makeStyles } from '@material-ui/core';
 import firebase from 'firebase';
@@ -19,6 +19,7 @@ import Show from './containers/show';
 import Register from './containers/register';
 import Login from './containers/login';
 import Account from './containers/account';
+import CircularLoader from 'components/partials/CircularLoader';
 
 type OwnProps = {}
 type Props = OwnProps & StoreDispatchProps & StoreStateProps & RouteComponentProps;
@@ -37,18 +38,27 @@ const useStyles = makeStyles((theme) => ({
 const App: React.FC<Props> = (props) => {
   const { app, main } = useStyles();
   const page = props.location.pathname;
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    // # When page loads
+    // # When page loads 
+    setIsLoading(true); 
     // Checking if the user is logged in or not
     // If he is logged in the store the userData into redux store
     firebase.auth().onAuthStateChanged(user => {
       if(user){
-        props.startFetchUserData(user.uid);
+        props.fetchUserData(user.uid)
+        .then(() => setIsLoading(false))
+        .catch(() => setIsLoading(false));
+      } else {
+        setIsLoading(false);
       }
     });
   }, []);
-  
+
+  // Wait for getting the user data from the server 
+  if(isLoading) return <CircularLoader fullHeight />;
+  // Then render the child component ( Child component depends over this data [user] )
 
   // For Full page requirement
   if(page === '/register'){
@@ -108,17 +118,13 @@ const App: React.FC<Props> = (props) => {
                   path="/shows"
                   render={() => <Shows />}
                 />
-                <Route
-                  path="/account"
-                  render={() => <Account />}
-                />
-                {/* <ProtectedRoute 
+                <ProtectedRoute 
                   path="/account"
                   redirect="/"
                   user={props.user}
                 >
                     <Account />
-                </ProtectedRoute> */}
+                </ProtectedRoute>
                 <Route 
                   path="/"
                   render={() => <Home />}
@@ -132,7 +138,7 @@ const App: React.FC<Props> = (props) => {
 };
 
 type StoreDispatchProps = {
-  startFetchUserData: (uid: string) => void;
+  fetchUserData: (uid: string) => Promise<void>;
 }
 
 type StoreStateProps = {
@@ -140,7 +146,7 @@ type StoreStateProps = {
 }
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, AppActions>): StoreDispatchProps => ({
-  startFetchUserData: (uid) => dispatch(startFetchUserData(uid)),
+  fetchUserData: (uid) => dispatch(startFetchUserData(uid)),
 });
 
 const mapStateToProps = (state: AppState): StoreStateProps => ({

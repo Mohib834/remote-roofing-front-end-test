@@ -19,14 +19,29 @@ const useStyles = makeStyles(theme => ({
 	title: {
     flexGrow: 1,
     fontWeight: 500,
+    [theme.breakpoints.down('xs')]: {
+      fontSize: 16,
+      lineHeight: 1,
+    }
 	},
 	login: {
 		marginRight: theme.spacing(2),
-	}
+  },
+  registerBtnMain: {
+    [theme.breakpoints.down('xs')]: {
+      display:'none'
+    }
+  },
+  registerBtnSec: {
+    display: 'none',
+    [theme.breakpoints.down('xs')]: {
+      display:'block'
+    }
+  }
 }));
 
 const Navbar: React.FC<Props> = (props) => {
-  const classes = useStyles();
+  const { registerBtnMain, registerBtnSec, login, title } = useStyles();
 
   const [userAuth, setUserAuth] = useState(false);
 
@@ -68,14 +83,23 @@ const Navbar: React.FC<Props> = (props) => {
               <Button
                 size="small"
                 onClick={() => props.history.push('/login')}
-                className={classes.login}
+                className={login}
                 color="inherit"
               >Log in</Button>
-              <Button variant="contained"
+              <Button 
+                className={registerBtnMain}
+                variant="contained"
                 size="small"
                 color="secondary"
                 onClick={() => props.history.push('/register')}
               >Start your free trial</Button>
+              <Button 
+                className={registerBtnSec}
+                variant="contained"
+                size="small"
+                color="secondary"
+                onClick={() => props.history.push('/register')}
+              >Register</Button>
           </React.Fragment>
       );
     } else {
@@ -125,7 +149,7 @@ const Navbar: React.FC<Props> = (props) => {
             <Toolbar style={{ padding: 0 }}>
                 <Typography
                   variant="h5"
-                  className={classes.title}
+                  className={title}
                 >
                     <Link to="/"
                       style={{ textDecoration: 'none', color: '#fff' }}

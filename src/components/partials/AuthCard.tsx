@@ -273,8 +273,8 @@ const AuthCard: React.FC<Props> = (props) => {
                       style={{ marginBottom: 30, fontWeight: 400 }}
                     >
                         { props.isLoading ? (
-                            <CircularProgress style={{ paddingTop:1.2, paddingBottom: 1.2 }}
-                              size={25}
+                            <CircularProgress style={{ paddingTop:2, paddingBottom: 2, color: '#fff' }}
+                              size={22}
                             />
                         ): 'Submit'}
                     </Button>
@@ -324,8 +324,8 @@ const AuthCard: React.FC<Props> = (props) => {
                       style={{ marginBottom: 30, fontWeight: 400 }}
                     >
                         { props.isLoading ? (
-                            <CircularProgress style={{ paddingTop:1.2, paddingBottom: 1.2 }}
-                              size={25}
+                            <CircularProgress style={{ paddingTop:2, paddingBottom: 2, color: '#fff' }}
+                              size={22}
                             />
                       ): 'Login'}
                     </Button>
