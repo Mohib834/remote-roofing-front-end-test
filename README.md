@@ -1,44 +1,66 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Movie Library w/ ReactJS
 
-## Available Scripts
+## [Check it live here](https://remote-roofing-moviebox.web.app/)
 
-In the project directory, you can run:
+![Thumbnail](thumbnail.png)
 
-### `npm start`
+A Movie Library made with ReactJS using remote roofing api and the movie db api
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Getting Started
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 
-### `npm test`
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Installing
 
-### `npm run build`
+Clone the Repository and run
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```
+npm install
+npm run dev
+```
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+## Deployment
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+To deploy simply run
 
-### `npm run eject`
+```
+npm run build
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Built With
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+- [React JS](https://reactjs.org/)
+- [React Router](https://github.com/ReactTraining/react-router)
+- [Redux](https://redux.js.org/)
+- [Redux Thunk](https://github.com/reduxjs/redux-thunk)
+- [Material Ui](https://material-ui.com/)
+- [Typescript](https://www.typescriptlang.org/)
+- [Firebase](https://firebase.google.com/)
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+## Preliminary Questions
 
-## Learn More
+1. How did you decide on the technical and architectural choices used as part of your solution?
+    
+    * From the starting of the project my main intention was, to make the app structure modular and type-safe so that I can have the least amount of bugs while coding and in production.
+   
+    * Due to this, I used typescript along with react and created a modular structure for redux with type safety.
+  
+    * The major part of the app was the initial type-safe modular code setup and to be honest, it took me 3 days to setup the boilerplate but after that i was able to finish the functionality i intended to create much faster.
+  
+    *  I realized that utilizing the time to build up the base is much better than getting stuck in the long run.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+2. Are there any improvements you could make to your submission?
+
+   * Well i am not sure about this. 
+
+3. What would you do differently if you were allocated more time?
+
+    * I worked on the app in a way that I didn't want any workarounds but due to time limitation, I had to do some workarounds. I wouldn't do that if I did get more time, i would've researched over it very well and would find a better solutions.
+
+
+## Authors
+
+- **Mohib** - _Development_ - [Mohib](https://github.com/Mohib834)
