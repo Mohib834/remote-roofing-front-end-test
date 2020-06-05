@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Switch, Route, withRouter, RouteComponentProps, Redirect } from 'react-router';
+import React, { useEffect, useState, Suspense } from 'react';
+import { Switch, Route, withRouter, RouteComponentProps } from 'react-router';
 import { makeStyles } from '@material-ui/core';
 import firebase from 'firebase';
 import { connect } from 'react-redux';
@@ -9,17 +9,17 @@ import { AppActions } from 'store/actions/types';
 import { startFetchUserData } from './store/actions/userAuth';
 import { User } from 'store/types';
 import { ProtectedRoute } from 'components/partials/ProtectedRoute';
+import CircularLoader from 'components/partials/CircularLoader';
 // Components
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 // Containers or Pages
-import Home from './containers/home';
-import Shows from './containers/shows';
-import Show from './containers/show';
-import Register from './containers/register';
-import Login from './containers/login';
-import Account from './containers/account';
-import CircularLoader from 'components/partials/CircularLoader';
+const Home = React.lazy(() => import('./containers/home')); 
+const Shows = React.lazy(() => import('./containers/shows')); 
+const Show = React.lazy(() => import('./containers/show')); 
+const Register = React.lazy(() => import('./containers/register')); 
+const Login = React.lazy(() => import('./containers/login')); 
+const Account = React.lazy(() => import('./containers/account')); 
 
 type OwnProps = {}
 type Props = OwnProps & StoreDispatchProps & StoreStateProps & RouteComponentProps;
@@ -71,7 +71,9 @@ const App: React.FC<Props> = (props) => {
                   redirect="/"
                   user={props.user}
                 >
-                    <Register />
+                    <Suspense fallback={<CircularLoader fullHeight />}>
+                        <Register />
+                    </Suspense>
                 </ProtectedRoute>
             </Switch>
         </div>
@@ -82,13 +84,16 @@ const App: React.FC<Props> = (props) => {
     return (
         <div className={app}>
             <Switch>
+              
                 <ProtectedRoute 
                   path="/login"
                   protectAuthPages={true}
                   redirect="/"
                   user={props.user}
                 >
-                    <Login />
+                    <Suspense fallback={<CircularLoader fullHeight />}>
+                        <Login />
+                    </Suspense>
                 </ProtectedRoute>
             </Switch>
         </div>
@@ -100,7 +105,7 @@ const App: React.FC<Props> = (props) => {
         <div className={app}>
             <Switch>
                 <Route path="/show"
-                  render={() => <Show />}
+                  render={() => <Suspense fallback={<CircularLoader fullHeight />}><Show /></Suspense>}
                 />
             </Switch>
         </div>
@@ -116,18 +121,21 @@ const App: React.FC<Props> = (props) => {
             <Switch>
                 <Route
                   path="/shows"
-                  render={() => <Shows />}
+                  render={() => <Suspense fallback={<CircularLoader fullHeight />}><Shows /></Suspense>}
+
                 />
                 <ProtectedRoute 
                   path="/account"
                   redirect="/"
                   user={props.user}
                 >
-                    <Account />
+                    <Suspense fallback={<CircularLoader fullHeight />}>
+                        <Account />
+                    </Suspense>
                 </ProtectedRoute>
                 <Route 
                   path="/"
-                  render={() => <Home />}
+                  render={() => <Suspense fallback={<CircularLoader fullHeight />}><Home /></Suspense>}
                 />
             </Switch>
         </main>

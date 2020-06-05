@@ -1,10 +1,11 @@
 // Using this Api over Remote Roofing api for additional Data
 import axios from 'axios';
+import { tmdbApiKey } from '../firebase/env';
 
 const tmdbApi = axios.create({
     baseURL: 'https://api.themoviedb.org/3/',
     params: {
-        api_key: process.env.REACT_APP_TMDB_API // eslint-disable-line
+        api_key: tmdbApiKey // eslint-disable-line
     },
     paramsSerializer: (params) => {
         // Sample implementation of query string building
