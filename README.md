@@ -41,7 +41,7 @@ npm run build
 
 ## Preliminary Questions
 
-1. How did you decide on the technical and architectural choices used as part of your solution?
+1. **How did you decide on the technical and architectural choices used as part of your solution?**
     
     * From the starting of the project my main intention was, to make the app structure modular and type-safe so that I can have the least amount of bugs while coding and in production.
    
@@ -52,11 +52,11 @@ npm run build
     *  I realized that utilizing the time to build up the base is much better than getting stuck in the long run.
 
 
-2. Are there any improvements you could make to your submission?
+2. **Are there any improvements you could make to your submission?**
 
    * Well i am not sure about this. 
 
-3. What would you do differently if you were allocated more time?
+3. **What would you do differently if you were allocated more time?**
 
     * I worked on the app in a way that I didn't want any workarounds but due to time limitation, I had to do some workarounds. I wouldn't do that if I did get more time, i would've researched over it very well and would find a better solutions.
 
