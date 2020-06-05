@@ -88,7 +88,6 @@ const SearchBar: React.FC<Props> = (props) => {
                     />
                 </div>
                 <Badge 
-                  onClick={() => props.history.push('/account')}
                   style={{ marginLeft:'auto', marginRight: 10, cursor:'pointer' }}
                   badgeContent={wishlistItemsLength()}
                   showZero

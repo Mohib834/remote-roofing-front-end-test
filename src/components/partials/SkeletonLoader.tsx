@@ -5,17 +5,19 @@ import { Container, Grid, Typography, makeStyles } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 
 const useStyles = makeStyles(theme => ({
-  skeleton: {
+  skeletonStyle: {
     background: theme.palette.secondary.main,
   },
 }));
 
-const Loader: React.FC = () => {
-    const { skeleton } = useStyles();
+const skeletons: Array<number> = [];
 
-    const arr = new Array(12);
-    const skeletons = [...arr];
+for(let i = 0; i <= 11; i++){
+  skeletons.push(i);
+}
 
+const SkeletonLoader: React.FC = () => {
+    const { skeletonStyle } = useStyles();
 
     return (
         <Container>
@@ -28,7 +30,7 @@ const Loader: React.FC = () => {
                 >
                     <Typography variant="h2">
                         <Skeleton 
-                          className={skeleton}
+                          className={skeletonStyle}
                         />
                     </Typography>
                 </Grid>
@@ -42,7 +44,7 @@ const Loader: React.FC = () => {
                           style={{ marginRight: 3.6, marginBottom: 40, marginTop: -15 }}
                         > 
                             <Skeleton
-                              className={skeleton}
+                              className={skeletonStyle}
                               variant="rect"
                               width={230}
                               height={320}
@@ -55,4 +57,4 @@ const Loader: React.FC = () => {
     );
 };
 
-export default Loader;
+export default SkeletonLoader;
